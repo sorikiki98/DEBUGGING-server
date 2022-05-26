@@ -1,0 +1,726 @@
+openapi: 3.0.0
+info:
+  description: This is Debugging API document.
+  version: 1.0.0
+  title: Debugging REST API
+  contact:
+    name: Dasol Kim
+    email: sorikiki98@naver.com
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: user
+    description: Methods to access and manage users
+  - name: bugs
+    description: Methods to access bug information and add a survey result
+  - name: companies
+    description: Methods to access company information and manage company interests and reservation
+  - name: products
+    description: Methods to access product information and manage product interests
+
+paths:
+  /user/signup:
+    post:
+      tags:
+        - user
+      summary: Signs up a user to the Debugging service
+      description: Creates a user account for the given user details.
+      operationId: signUp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+        required: true
+      responses:
+        '201':
+          description: Account Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAuthenticationSuccess'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Logs in a user to the Debugging service
+      description: Verify if a logged-in user is valid or not.
+      operationId: logIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      responses:
+        '200':
+          description: Login Succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLogin'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /user:
+    delete:
+      tags:
+        - user
+      summary: Remove a logged-in user from the Debugging data system
+      description: Remove a current user from the User database.
+      operationId: signOut
+      responses:
+        '204':
+          description: Signout Succeeded
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /user/mypage:
+    get:
+      tags:
+        - user
+      summary: Fetch user-related information in mypage
+      description: This includes both user-generated information and current status about application usages.
+      operationId: getUserDetails
+      responses:
+        '200':
+          description: User Information Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+  /companies:
+    get:
+      tags:
+        - companies
+      operationId: getCompanies
+      responses:
+        '200':
+          description: Companies' Information Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompaniesList'
+  /companies/interest/{company_id}:
+    post:
+      tags:
+        - companies
+      summary: Add a company into a user's company interest list
+      description: Add one item into a scheme called CompanyInterest using id of both current user and chosed company.
+      operationId: addCompanyInterest
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Company Interest Item Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyInformation'
+
+        '409':
+          description: Already Added With Same User and Company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+    delete:
+      tags:
+        - companies
+      summary: Remove a company from a user's company interest list
+      description: Remove one item into a scheme called CompanyInterest using id of both current user and chosed company.
+      operationId: removeCompanyInterest
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Company Interest Item Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyInformation'
+
+        '404':
+          description: Unexisted Company Interest Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /companies/reservation/{company_id}:
+    post:
+      tags:
+        - companies
+      summary: Make a reservation to the Debugging service
+      description: Make a reservation using id of both current user and chosed company.
+      operationId: bookCompany
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationApplication'
+        required: true
+      responses:
+        '201':
+          description: New Reservation Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDetail'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /bugs:
+    get:
+      tags:
+        - bugs
+      summary: Fetch all of bugs' information
+      description: Show a bunch of information about each bug which is easily found in the house.
+      operationId: getBugs
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BugsList'
+  /bugs/{bug_name}:
+    get:
+      tags:
+        - bugs
+      summary: Fetch only one bug's information
+      description: Show information about a bug which is one of easily found in the house.
+      operationId: getBug
+      parameters:
+        - name: bug_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BugInformation'
+  /products:
+    get:
+      tags:
+        - products
+      summary: Fetch all of products' information
+      description: Show a bunch of information about each product which is available in the website.
+      operationId: getProducts
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsList'
+  /product/{product_name}:
+    get:
+      tags:
+        - products
+      summary: Fetch only one product's information
+      description: Show information about a product which is one of frequently found in the website.
+      operationId: getProduct
+      parameters:
+        - name: product_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInformation'
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          minLength: 5
+        name:
+          type: string
+        contactNumbers:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+          nullable: true
+        sizeOfHouse:
+          type: number
+          nullable: true
+        numOfRooms:
+          type: integer
+          nullable: true
+      required:
+        - username
+        - password
+        - name
+        - contactNumbers
+        - email
+      example:
+        username: 김다솔
+        password: abc1234
+        name: Dasol Kim
+        contactNumbers: 010-1111-2222
+        email: sorikiki98@sookmyung.ac.kr
+    UserAuthenticationSuccess:
+      type: object
+      properties:
+        token:
+          type: string
+        username:
+          type: string
+      required:
+        - token
+        - username
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        username: 김다솔
+    UserLogin:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          minLength: 5
+      required:
+        - username
+        - password
+      example:
+        username: 김다솔
+        password: abc1234
+    UserDetail:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          minLength: 5
+        name:
+          type: string
+        contactNumbers:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+          nullable: true
+        sizeOfHouse:
+          type: number
+          nullable: true
+        numOfRooms:
+          type: integer
+          nullable: true
+        accumulatedNumOfUsages:
+          type: integer
+          nullable: true
+          default: 0
+        numOfInterestedCompanies:
+          type: integer
+          nullable: true
+          default: 0
+        surveyList:
+          type: array
+          items:
+            type: object
+            properties:
+              surveyDate:
+                type: string
+                format: date
+              bugName:
+                type: string
+            required:
+              - surveyDate
+              - bugName
+        productList:
+          type: array
+          items:
+            type: string
+        reservationList:
+          type: array
+          items:
+            type: object
+            properties:
+              reservationId:
+                type: integer
+                format: int64
+              companyName:
+                type: string
+              processState:
+                type: integer
+                nullable: true
+                default: 1
+            required:
+              - reservationId
+              - companyName
+              - processState
+      required:
+        - userId
+        - username
+        - password
+        - name
+        - contactNumbers
+        - email
+        - accumulatedNumOfUsages
+        - numOfInterestedCompanies
+        - surveyList
+        - productList
+        - reservationList
+      example:
+        userId: 19
+        username: 김다솔
+        password: abc1234
+        name: Dasol Kim
+        contactNumbers: 010-1111-2222
+        email: sorikiki98@sookmyung.ac.kr
+        address: 서울특별시 용산구 청파로
+        sizeOfHouse: 10
+        numOfRooms: 2
+        accumulatedNumOfUsages: 3
+        numOfInterestedCompanies: 4
+        surveyList:
+          - surveyDate: '2022-05-01'
+            bugName: 모기
+          - surveyDate: '2022-05-01'
+            bugName: 바퀴벌레
+        productList: 
+          - 홈매트 제로 리퀴드
+          - 차니팡 모기장
+        reservationList:
+          - reservationId: 2 
+            companyName: 해충마스터
+            processState: 1
+    CompanyInformation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 12
+        shortIntro:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+        contactNumbers:
+          type: string
+        killableBugs:
+          type: string
+        availableArea:
+          type: string
+        availableCounselTime:
+          type: string
+        thumbnail:
+          type: string
+          format: url
+          nullable: true
+        isCompanyInterested:
+          type: boolean
+          nullable: true
+          default: false
+      required:
+        - id
+        - name
+        - shortIntro
+        - description
+        - contactNumbers
+        - killableBugs
+        - availableArea
+        - availableCounselTime
+      example:
+        id: 1
+        name: 올킬방역
+        shortIntro: 해충과 바이러스 퇴치 방역회사 침대 살균 소독도 가능합니다.
+        description: 여러분들의 보금자리와 일터에서 심심치 않게 나타나는 해충! 혐오감은 물론 위생과 건강에 치명적인 해를 입힙니다. (주)올킬은 한국방역협회 정회원으로 등록된 최고의 자격을 갖춘 업체로서 체계적이고 전문화된 방역서비스를 위해 최선을 다하고 있습니다.
+        contactNumbers: 1899-1407
+        killableBugs: 바퀴벌레, 개미
+        availableArea: 전국 가능
+        availableCounselTime: 24시간 고객센터 상담 가능
+        thumbnail: https://modo-phinf.pstatic.net/20210202_220/1612260614570k31DQ_JPEG/mosae0YPBy.jpeg?type=w720
+        isCompanyInterested: true
+    CompaniesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CompanyInformation'
+    ReservationApplication:
+      type: object
+      properties:
+        bugName:
+          type: string
+        firstFoundDate:
+          type: string
+          format: date
+        firstFoundPlace:
+          type: string
+        wantedDate:
+          type: string
+        wantedTime:
+          type: string
+        hasBugBeenShown:
+          type: boolean
+        reserveDateTime:
+          type: string
+          format: date-time
+        extraMessage:
+          type: string
+          nullable: true
+      required:
+        - bugName
+        - firstFoundDate
+        - firstFoundPlace
+        - wantedDate
+        - wantedTime
+        - hasBugBeenShown
+        - reserveDateTime
+      example:
+        bugName: 바퀴벌레
+        firstFoundDate: '2022-05-04'
+        firstFoundPlace: 화장실 변기 옆
+        wantedDate: 2022-05-12~2022-05-19
+        wantedTime: 오후 4시~ 오후 6시
+        hasBugBeenShown: false
+        reserveDateTime: '2022-05-10'
+    ReservationDetail:
+      type: object
+      properties:
+        bugName:
+          type: string
+        firstFoundDate:
+          type: string
+          format: date
+        firstFoundPlace:
+          type: string
+        wantedDate:
+          type: string
+        wantedTime:
+          type: string
+        hasBugBeenShown:
+          type: boolean
+        reserveDateTime:
+          type: string
+          format: date-time
+        extraMessage:
+          type: string
+          nullable: true
+        userId:
+          type: integer
+          format: int64
+        userName:
+          type: string
+        userContactNumbers:
+          type: string
+        userEmail:
+          type: string
+          format: email
+        userAddress:
+          type: string
+          nullable: true
+        sizeOfHouse:
+          type: number
+          nullable: true
+        numOfRooms:
+          type: integer
+          nullable: true
+        companyId:
+          type: integer
+          format: int64
+        companyName:
+          type: string
+          maxLength: 12
+        shortIntro:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+        companyContactNumbers:
+          type: string
+        killableBugs:
+          type: string
+        availableArea:
+          type: string
+        availableCounselTime:
+          type: string
+        thumbnail:
+          type: string
+          format: url
+          nullable: true
+      required:
+        - bugName
+        - firstFoundDate
+        - firstFoundPlace
+        - wantedDate
+        - wantedTime
+        - hasBugBeenShown
+        - reserveDateTime
+        - userId
+        - userName
+        - userContactNumbers
+        - userEmail
+        - userAddress
+        - companyId
+        - companyName
+        - shortIntro
+        - description
+        - companyContactNumbers
+        - killableBugs
+        - availableArea
+        - availableCounselTime
+      example:
+        bugName: 바퀴벌레
+        firstFoundDate: '2022-05-04'
+        firstFoundPlace: 화장실 변기 옆
+        wantedDate: 2022-05-12~2022-05-19
+        wantedTime: 오후 4시~ 오후 6시
+        hasBugBeenShown: false
+        reserveDateTime: '2022-05-10'
+        userId: 1
+        userName: 김다솔
+        userContactNumbers: 010-1111-2222
+        userEmail: sorikiki98@sookmyung.ac.kr
+        userAddress: 서울특별시 용산구 청파로
+        companyId: 2
+        companyName: 해충마스터
+        shortIntro: 바퀴벌레, 좀벌레 등 해충방역 전문 업체입니다. 수도권만 출장 가능합니다.
+        description: 해충마스터는 우리 인간에게 유해한 해충을 진단, 퇴치하는"친환경 그린 치료소"입니다. 모든 상황에 맞추어 식약허가해충퇴치제를 보다 강력하고, 안전하며 친환경적인 제품으로 맞추어 개발, 사용하고 있습니다.
+        companyContactNumbers: 1800-3055
+        killableBugs: 바퀴벌레, 모기, 좀벌레
+        availableArea: 서울, 경기, 인천, 충청북도
+        availableCounselTime: 24시간 고객센터 상담 가능
+        thumbnail: http://www.hcmaster.com/images/common/top_logo.gif
+    BugInformation:
+      type: object
+      properties:
+        name:
+          type: string
+        appearance:
+          type: string
+        movement:
+          type: string
+        habitat:
+          type: string
+        color:
+          type: string
+        surveyResult:
+          type: string
+      required:
+        - name
+        - appearance
+        - movement
+        - habitat
+        - color
+        - surveyResult
+      example:
+        name: 좀벌레
+        appearance: 유선형 / 길쭉함 / 납작함 / 긴더듬이 /날개없음 /다리많음
+        movement: 기어다님 / 매우빠름
+        habitat: 어두운곳 / 습한곳 / 따뜻한곳 /오래된책 / 화장실
+        color: 백색 / 은색 /옅은황색
+        surveyResult: 흰색 또는 은색이에요 / 야행성이라 밤에 주로 활동해요 /매우 빠르게 움직여요 / 크기가 작아 다리가 잘 보이지 않아요 / 더듬이가 3개 있는 애벌레처럼 보여요
+    BugsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/BugInformation'
+    ProductInformation:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        shortIntro:
+          type: string
+          maxLength: 30
+        description:
+          type: string
+        thumbnail:
+          type: string
+          format: url
+          nullable: true
+        isProductInterested:
+          type: boolean
+          nullable: true
+          default: false
+      required:
+        - name
+        - type
+        - shortIntro
+        - description
+      example:
+        name: 홈매트 제로 리퀴드
+        type: 화학약품
+        shortIntro: 걱정제로 안심 보호막으로 마음은 편안하게, 효과는 확실하게
+        description: 쉽고 간편한 온/오프 스위치 타입 + NEW 컴팩트한 디자인 + 편안한 LED조명 + 효과적인 살충력까지!
+        thumbnail: https://cdn.011st.com/11dims/resize/600x600/quality/75/11src/pd/21/2/1/7/9/3/4/pyNlM/3534217934_B.jpg
+        isProductInterested: true
+    ProductsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ProductInformation'
+    ErrorApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+      example:
+        message: 'Somehting went wrong. 😅'
