@@ -1,27 +1,28 @@
 import express from 'express';
-import mysql from 'mysql';
+import { Request, Response, NextFunction } from 'express';
 import yamljs from 'yamljs';
-import swaggerUi from 'swagger-ui-express'
+import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import BugsRouter from './routes/bugs.js';
 
 const app = express();
-const pool = mysql.createPool({
-	host: 'localhost',
-	user: 'root',
-	password: 'Kyesolkim0626!',
-	database: 'debugging',
-	port: 3306,
-});
-
-pool.getConnection((err) => {
-	if (err) {
-		console.log(err);
-		return;
-	}
-	console.log('Connected..');
-});
 
 const apiJSDocument = yamljs.load('./api/openapi.yaml');
 
 app.use(express.json());
+app.use(morgan('tiny'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiJSDocument));
+
+app.use('/bugs', BugsRouter);
+
+app.use('/', (req: Request, res: Response, next: NextFunction) => {
+	res.sendStatus(404);
+});
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+	if (err) {
+		res.status(500).send('Internal Server Error...');
+	}
+});
+
 app.listen(8080);
