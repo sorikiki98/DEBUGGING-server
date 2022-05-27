@@ -1,12 +1,12 @@
 import { MysqlError } from 'mysql';
 import { pool } from '../db/database.js';
-import { BugResult } from '../types/bugs.js';
+import { Bug } from '../types/bug.js';
 
-export function getBugs(): Promise<BugResult[]> {
+export function getBugs(): Promise<Bug[]> {
 	return new Promise((resolve, reject) => {
 		pool.query(
 			'SELECT * FROM bugs',
-			(error: MysqlError, result: BugResult[]) => {
+			(error: MysqlError, result: Bug[]) => {
 				if (error) {
 					console.log(error.sqlMessage);
 					reject(error);
@@ -17,12 +17,12 @@ export function getBugs(): Promise<BugResult[]> {
 	});
 }
 
-export function getBug(bugId: number): Promise<BugResult> {
+export function getBug(bugId: number): Promise<Bug> {
 	return new Promise((resolve, reject) => {
 		pool.query(
 			'SELECT * FROM bugs WHERE id = ?',
 			bugId,
-			(error: MysqlError | null, result: BugResult[]) => {
+			(error: MysqlError | null, result: Bug[]) => {
 				if (error) {
 					console.log(error.sqlMessage);
 					reject(error);

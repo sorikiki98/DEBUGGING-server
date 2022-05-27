@@ -1,15 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, NextFunction } from 'express';
 import * as BugsRepository from '../data/bugs.js';
-import { RequestWithBugId } from '../types/requests.js';
+import { RequestWithBugId, ResponseWithBugs, ResponseWithBug } from '../types/bug.js';
 
-export async function getBugs(req: Request, res: Response, next: NextFunction) {
+export async function getBugs(req: Request, res: ResponseWithBugs, next: NextFunction) {
 	const bugs = await BugsRepository.getBugs();
 	res.status(200).json(bugs);
 }
 
 export async function getBug(
 	req: RequestWithBugId,
-	res: Response,
+	res: ResponseWithBug,
 	next: NextFunction
 ) {
 	const bug = await BugsRepository.getBug(req.params.bug_id);
