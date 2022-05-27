@@ -219,22 +219,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BugsList'
-  /bugs/{bug_name}:
+  /bugs/{bug_id}:
     get:
       tags:
         - bugs
       summary: Fetch only one bug's information
-      description: Show information about a bug which is one of easily found in the house.
+      description: Show information about a chosen bug
       operationId: getBug
       parameters:
-        - name: bug_name
+        - name: bug_id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BugInformation'
+  /bugs/survey/{bug_id}:
+    post:
+      tags:
+        - bugs
+      summary: Add a survey result showing a specific bug information
+      description: Add one survey item with an inferred bug based on the survey result.
+      operationId: addSurvey
+      parameters:
+        - name: bug_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Survey Result Created
           content:
             application/json:
               schema:
@@ -253,19 +273,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductsList'
-  /product/{product_name}:
+  /product/{product_id}:
     get:
       tags:
         - products
       summary: Fetch only one product's information
-      description: Show information about a product which is one of frequently found in the website.
+      description: Show information about a chosen product
       operationId: getProduct
       parameters:
-        - name: product_name
+        - name: product_id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: Successfully Fetched
@@ -273,6 +293,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductInformation'
+  /products/interest/{product_id}:
+    post:
+      tags:
+        - products
+      summary: Add a product into a user's product interest list
+      description: Add one item into a scheme called ProductInterest using id of both current user and chosed product.
+      operationId: addProductInterest
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Product Interest Item Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInformation'
+
+        '409':
+          description: Already Added With Same User and Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+    delete:
+      tags:
+        - products
+      summary: Remove a product from a user's product interest list
+      description: Remove one item into a scheme called ProductInterest using id of both current user and chosed product.
+      operationId: removeProductInterest
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Product Interest Item Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInformation'
+
+        '404':
+          description: Unexisted Product Interest Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
 components:
   schemas:
     UserRegistration:
@@ -343,7 +416,7 @@ components:
     UserDetail:
       type: object
       properties:
-        userId:
+        id:
           type: integer
           format: int64
         username:
@@ -381,18 +454,30 @@ components:
           items:
             type: object
             properties:
+              bugId:
+                type: integer
+                format: int64
+              bugName:
+                type: string
               surveyDate:
                 type: string
                 format: date
-              bugName:
-                type: string
             required:
               - surveyDate
               - bugName
         productList:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              productId:
+                type: integer
+                format: int64
+              productName:
+                type: string
+            required:
+              - productId
+                productName
         reservationList:
           type: array
           items:
@@ -412,7 +497,7 @@ components:
               - companyName
               - processState
       required:
-        - userId
+        - id
         - username
         - password
         - name
@@ -424,7 +509,7 @@ components:
         - productList
         - reservationList
       example:
-        userId: 19
+        id: 19
         username: 김다솔
         password: abc1234
         name: Dasol Kim
@@ -436,15 +521,19 @@ components:
         accumulatedNumOfUsages: 3
         numOfInterestedCompanies: 4
         surveyList:
-          - surveyDate: '2022-05-01'
+          - bugId: 8
             bugName: 모기
-          - surveyDate: '2022-05-01'
+            surveyDate: '2022-05-01'
+          - bugId: 1
             bugName: 바퀴벌레
-        productList: 
-          - 홈매트 제로 리퀴드
-          - 차니팡 모기장
+            surveyDate: '2022-05-01'
+        productList:
+          - productId: 1
+            productName: 홈매트 제로 리퀴드
+          - productId: 2
+            productName: 차니팡 모기장
         reservationList:
-          - reservationId: 2 
+          - reservationId: 2
             companyName: 해충마스터
             processState: 1
     CompanyInformation:
@@ -542,6 +631,9 @@ components:
     ReservationDetail:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         bugName:
           type: string
         firstFoundDate:
@@ -604,6 +696,7 @@ components:
           format: url
           nullable: true
       required:
+        - id
         - bugName
         - firstFoundDate
         - firstFoundPlace
@@ -625,6 +718,7 @@ components:
         - availableArea
         - availableCounselTime
       example:
+        id: 1
         bugName: 바퀴벌레
         firstFoundDate: '2022-05-04'
         firstFoundPlace: 화장실 변기 옆
@@ -649,6 +743,9 @@ components:
     BugInformation:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         name:
           type: string
         appearance:
@@ -662,6 +759,7 @@ components:
         surveyResult:
           type: string
       required:
+        - id
         - name
         - appearance
         - movement
@@ -669,6 +767,7 @@ components:
         - color
         - surveyResult
       example:
+        id: 1
         name: 좀벌레
         appearance: 유선형 / 길쭉함 / 납작함 / 긴더듬이 /날개없음 /다리많음
         movement: 기어다님 / 매우빠름
@@ -682,6 +781,9 @@ components:
     ProductInformation:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         name:
           type: string
         type:
@@ -700,11 +802,13 @@ components:
           nullable: true
           default: false
       required:
+        - id
         - name
         - type
         - shortIntro
         - description
       example:
+        id: 1
         name: 홈매트 제로 리퀴드
         type: 화학약품
         shortIntro: 걱정제로 안심 보호막으로 마음은 편안하게, 효과는 확실하게
@@ -723,4 +827,4 @@ components:
       required:
         - message
       example:
-        message: 'Somehting went wrong. 😅'
+        message: 'Something went wrong. 😅'
