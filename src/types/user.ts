@@ -15,7 +15,7 @@ export type RequestWithUserRegistration = Request<{}, {}, UserRegistration>;
 export type User = { id: number } & UserRegistration
 
 export type UserAuthenticationSuccess = {
-    token: number,
+    token: string,
     userName: string
 }
 
