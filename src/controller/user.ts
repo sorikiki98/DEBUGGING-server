@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
 import {
 	RequestWithUserRegistration,
+	RequestWithUserLogin,
 	ResponseWithUserAuthentication,
 } from '../types/user.js';
 
@@ -36,7 +37,25 @@ export async function createUser(
 	});
 }
 
-export async function login(req: Request, res: Response, next: NextFunction) {}
+export async function login(
+	req: RequestWithUserLogin,
+	res: ResponseWithUserAuthentication,
+	next: NextFunction
+) {
+	const { userName, password } = req.body;
+	const user = await UserRepository.findUserByName(userName);
+	if (!user) return res.sendStatus(401);
+
+	const match = await bcrypt.compare(password, user.password);
+	if (!match) return res.sendStatus(401);
+
+	const token = createJWT(user.id);
+
+	res.status(200).json({
+		token,
+		userName,
+	});
+}
 
 function createJWT(userId: number): string {
 	return jwt.sign({ userId }, jwtPrivateKey, { expiresIn: jwtExpiration });

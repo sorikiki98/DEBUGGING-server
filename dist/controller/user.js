@@ -30,7 +30,20 @@ export function createUser(req, res, next) {
     });
 }
 export function login(req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () { });
+    return __awaiter(this, void 0, void 0, function* () {
+        const { userName, password } = req.body;
+        const user = yield UserRepository.findUserByName(userName);
+        if (!user)
+            return res.sendStatus(401);
+        const match = yield bcrypt.compare(password, user.password);
+        if (!match)
+            return res.sendStatus(401);
+        const token = createJWT(user.id);
+        res.status(200).json({
+            token,
+            userName,
+        });
+    });
 }
 function createJWT(userId) {
     return jwt.sign({ userId }, jwtPrivateKey, { expiresIn: jwtExpiration });
