@@ -25,7 +25,7 @@ paths:
         - user
       summary: Signs up a user to the Debugging service
       description: Creates a user account for the given user details.
-      operationId: signUp
+      operationId: signup
       requestBody:
         content:
           application/json:
@@ -58,7 +58,7 @@ paths:
         - user
       summary: Logs in a user to the Debugging service
       description: Verify if a logged-in user is valid or not.
-      operationId: logIn
+      operationId: login
       requestBody:
         content:
           application/json:
@@ -84,7 +84,7 @@ paths:
         - user
       summary: Remove a logged-in user from the Debugging data system
       description: Remove a current user from the User database.
-      operationId: signOut
+      operationId: remove
       responses:
         '204':
           description: Signout Succeeded
@@ -368,7 +368,7 @@ components:
           type: string
           nullable: true
         sizeOfHouse:
-          type: number
+          type: number 
           nullable: true
         numOfRooms:
           type: integer
