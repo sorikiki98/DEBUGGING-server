@@ -12,5 +12,5 @@ export type Bug = {
 
 export type RequestWithBugId = Request<{ bug_id: number }>;
 
-export type ResponseWithBugs = Response<Bug[]>
-export type ResponseWithBug = Response<Bug>
+export type ResponseWithBugs = Response<Bug[]>;
+export type ResponseWithBug = Response<Bug>;

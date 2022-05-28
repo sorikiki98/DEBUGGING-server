@@ -7,10 +7,7 @@ import {
 	RequestWithUserLogin,
 	ResponseWithUserAuthentication,
 } from '../types/user.js';
-
-const saltRounds = 10;
-const jwtPrivateKey = 'VljbgaD4Nn$GGMJ4';
-const jwtExpiration = 60000;
+import { config } from '../config.js';
 
 export async function createUser(
 	req: RequestWithUserRegistration,
@@ -23,7 +20,7 @@ export async function createUser(
 		return res.sendStatus(209);
 	}
 
-	const hashed = await bcrypt.hash(password, saltRounds);
+	const hashed = await bcrypt.hash(password, config.bcrypt.saltsRound);
 	const userId = await UserRepository.createUser({
 		...req.body,
 		password: hashed,
@@ -58,5 +55,5 @@ export async function login(
 }
 
 function createJWT(userId: number): string {
-	return jwt.sign({ userId }, jwtPrivateKey, { expiresIn: jwtExpiration });
+	return jwt.sign({ userId }, config.jwt.privateKey, { expiresIn: config.jwt.expirSecs });
 }

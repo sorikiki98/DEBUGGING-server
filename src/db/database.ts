@@ -1,9 +1,10 @@
 import mysql from 'mysql';
+import { config } from '../config.js';
 
 export const pool = mysql.createPool({
-	host: 'localhost',
-	user: 'root',
-	password: 'Kyesolkim0626!',
-	database: 'debugging',
-	port: 3306,
+	host: config.db.host,
+	user: config.db.user,
+	password: config.db.password,
+	database: config.db.database,
+	port: config.db.port,
 })

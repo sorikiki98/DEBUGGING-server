@@ -10,9 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
-const saltRounds = 10;
-const jwtPrivateKey = 'VljbgaD4Nn$GGMJ4';
-const jwtExpiration = 60000;
+import { config } from '../config.js';
 export function createUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userName, password } = req.body;
@@ -20,7 +18,7 @@ export function createUser(req, res, next) {
         if (user) {
             return res.sendStatus(209);
         }
-        const hashed = yield bcrypt.hash(password, saltRounds);
+        const hashed = yield bcrypt.hash(password, config.bcrypt.saltsRound);
         const userId = yield UserRepository.createUser(Object.assign(Object.assign({}, req.body), { password: hashed }));
         const token = createJWT(userId);
         res.status(201).json({
@@ -46,6 +44,6 @@ export function login(req, res, next) {
     });
 }
 function createJWT(userId) {
-    return jwt.sign({ userId }, jwtPrivateKey, { expiresIn: jwtExpiration });
+    return jwt.sign({ userId }, config.jwt.privateKey, { expiresIn: config.jwt.expirSecs });
 }
 //# sourceMappingURL=user.js.map

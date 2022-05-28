@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import BugsRouter from './routes/bugs.js';
 import UserRouter from './routes/user.js';
+import { config } from './config.js';
 const app = express();
 const apiJSDocument = yamljs.load('./api/openapi.yaml');
 app.use(express.json());
@@ -19,5 +20,5 @@ app.use((err, req, res, next) => {
         res.status(500).send('Internal Server Error...');
     }
 });
-app.listen(8080);
+app.listen(config.host.port);
 //# sourceMappingURL=app.js.map
