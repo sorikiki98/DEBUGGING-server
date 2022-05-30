@@ -1,6 +1,4 @@
-import { UserRegistration } from '../types/user.js';
 import { pool } from '../db/database.js';
-import { User } from '../types/user.js';
 
 export function createUser(user: UserRegistration): Promise<number> {
 	const {

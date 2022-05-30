@@ -1,6 +1,5 @@
 import { MysqlError } from 'mysql';
 import { pool } from '../db/database.js';
-import { Bug } from '../types/bug.js';
 
 export function getBugs(): Promise<Bug[]> {
 	return new Promise((resolve, reject) => {
@@ -17,7 +16,7 @@ export function getBugs(): Promise<Bug[]> {
 	});
 }
 
-export function getBug(bugId: number): Promise<Bug> {
+export function getBug(bugId: string): Promise<Bug> {
 	return new Promise((resolve, reject) => {
 		pool.query(
 			'SELECT * FROM bugs WHERE id = ?',

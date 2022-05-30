@@ -1,26 +1,21 @@
-import { NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
-import {
-	RequestWithUserRegistration,
-	RequestWithUserLogin,
-	ResponseWithUserAuthentication,
-} from '../types/user.js';
 import { config } from '../config.js';
 
 export async function createUser(
-	req: RequestWithUserRegistration,
-	res: ResponseWithUserAuthentication,
+	req: Request,
+	res: Response,
 	next: NextFunction
 ) {
-	const { userName, password } = req.body;
+	const { userName, password } = req.body as UserRegistration;
 	const user = await UserRepository.findUserByName(userName);
 	if (user) {
 		return res.sendStatus(209);
 	}
 
-	const hashed = await bcrypt.hash(password, config.bcrypt.saltsRound);
+	const hashed = await bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
 	const userId = await UserRepository.createUser({
 		...req.body,
 		password: hashed,
@@ -34,12 +29,8 @@ export async function createUser(
 	});
 }
 
-export async function login(
-	req: RequestWithUserLogin,
-	res: ResponseWithUserAuthentication,
-	next: NextFunction
-) {
-	const { userName, password } = req.body;
+export async function login(req: Request, res: Response, next: NextFunction) {
+	const { userName, password } = req.body as UserLogin;
 	const user = await UserRepository.findUserByName(userName);
 	if (!user) return res.sendStatus(401);
 
@@ -55,5 +46,7 @@ export async function login(
 }
 
 function createJWT(userId: number): string {
-	return jwt.sign({ userId }, config.jwt.privateKey, { expiresIn: config.jwt.expirSecs });
+	return jwt.sign({ userId }, config.jwt.privateKey, {
+		expiresIn: config.jwt.expirSecs,
+	});
 }

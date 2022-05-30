@@ -18,7 +18,7 @@ export function createUser(req, res, next) {
         if (user) {
             return res.sendStatus(209);
         }
-        const hashed = yield bcrypt.hash(password, config.bcrypt.saltsRound);
+        const hashed = yield bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
         const userId = yield UserRepository.createUser(Object.assign(Object.assign({}, req.body), { password: hashed }));
         const token = createJWT(userId);
         res.status(201).json({
@@ -44,6 +44,8 @@ export function login(req, res, next) {
     });
 }
 function createJWT(userId) {
-    return jwt.sign({ userId }, config.jwt.privateKey, { expiresIn: config.jwt.expirSecs });
+    return jwt.sign({ userId }, config.jwt.privateKey, {
+        expiresIn: config.jwt.expirSecs,
+    });
 }
 //# sourceMappingURL=user.js.map
