@@ -19,10 +19,23 @@ export type Bug = {
 };
 
 export type Survey = {
-	userId: number,
-	bugId: string,
-	surveyDate: Date
-}
+	userId: number;
+	bugId: string;
+	surveyDate: Date;
+};
+
+export type Company = {
+	id: number;
+	name: string;
+	shortIntro: string;
+	description: string;
+	contactNumbers: string;
+	killableBugs: string;
+	availableArea: string;
+	availableCounselTime: string;
+	thumbnail?: string;
+	isCompanyInterested?: boolean = false;
+};
 
 export type UserRegistration = {
 	userName: string;
@@ -47,4 +60,4 @@ export type UserAuthenticationSuccess = {
 	userName: string;
 };
 
-export type JwtPayloadWithUserId = Jwt.JwtPayload & { userId: number }
+export type JwtPayloadWithUserId = Jwt.JwtPayload & { userId: number };

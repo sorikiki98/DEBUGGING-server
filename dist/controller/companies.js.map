@@ -1,0 +1,1 @@
+{"version":3,"file":"companies.js","sourceRoot":"","sources":["../../src/controller/companies.ts"],"names":[],"mappings":";;;;;;;;;AACA,OAAO,KAAK,mBAAmB,MAAM,sBAAsB,CAAC;AAG5D,MAAM,UAAgB,YAAY,CACjC,GAAY,EACZ,GAAa,EACb,IAAkB;;QAElB,MAAM,SAAS,GAAG,CAAC,MAAM,mBAAmB,CAAC,YAAY,EAAE,CAAc,CAAC;QAC1E,GAAG,CAAC,MAAM,CAAC,GAAG,CAAC,CAAC,IAAI,CAAC,SAAS,CAAC,CAAC;IACjC,CAAC;CAAA"}

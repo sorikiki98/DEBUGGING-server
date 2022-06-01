@@ -1,0 +1,1 @@
+{"version":3,"file":"companies.js","sourceRoot":"","sources":["../../src/routes/companies.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,MAAM,SAAS,CAAC;AAC9B,OAAO,KAAK,mBAAmB,MAAM,4BAA4B,CAAC;AAClE,OAAO,EAAE,MAAM,EAAE,MAAM,uBAAuB,CAAC;AAE/C,MAAM,eAAe,GAAG,OAAO,CAAC,MAAM,EAAE,CAAC;AAEzC,eAAe,CAAC,GAAG,CAAC,GAAG,EAAE,MAAM,EAAE,mBAAmB,CAAC,YAAY,CAAC,CAAC;AAEnE,eAAe,eAAe,CAAC"}
