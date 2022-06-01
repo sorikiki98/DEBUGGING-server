@@ -172,7 +172,7 @@ paths:
         - companies
       summary: Make a reservation to the Debugging service
       description: Make a reservation using id of both current user and chosed company.
-      operationId: bookCompany
+      operationId: reserve
       parameters:
         - name: company_id
           in: path
@@ -692,7 +692,6 @@ components:
         - wantedDate
         - wantedTime
         - hasBugBeenShown
-        - reserveDateTime
         - userId
         - userName
         - userContactNumbers

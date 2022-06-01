@@ -37,6 +37,36 @@ export type Company = {
 	isCompanyInterested?: boolean = false;
 };
 
+export type ReservationForm = {
+	bugName: string;
+	firstFoundDate: Date;
+	firstFoundPlace: string;
+	wantedDate: Date;
+	wantedTime: string;
+	hasBugBeenShown: boolean;
+	reservationDateTime?: Date;
+	extraMessage?: string;
+};
+
+export type ReservationDetail = ReservationForm & {
+	userId: number;
+	userName: string;
+	userContactNumbers: string;
+	userEmail: string;
+	userAddress?: string;
+	sizeOfHouse?: number;
+	numOfRooms?: number;
+	companyId: number;
+	companyName: string;
+	shortIntro: string;
+	description: string;
+	companyContactNumbers: string;
+	killableBugs: string;
+	availableArea: string;
+	availableCounselTime: string;
+	thumbnail?: string;
+};
+
 export type UserRegistration = {
 	userName: string;
 	password: string;
