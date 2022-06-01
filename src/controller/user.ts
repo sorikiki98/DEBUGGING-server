@@ -16,7 +16,10 @@ export async function createUser(
 		return res.sendStatus(209);
 	}
 
-	const hashed = await bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
+	const hashed = await bcrypt.hash(
+		password,
+		parseInt(config.bcrypt.saltsRound)
+	);
 	const userId = await UserRepository.createUser({
 		...req.body,
 		password: hashed,
@@ -44,6 +47,11 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 		token,
 		userName,
 	});
+}
+
+export async function remove(req: Request, res: Response, next: NextFunction) {
+	await UserRepository.deleteUser(req.userId!);
+	res.sendStatus(204);
 }
 
 function createJWT(userId: number): string {

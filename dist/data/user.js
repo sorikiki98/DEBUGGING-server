@@ -8,6 +8,9 @@ export function findUserById(userId) {
 export function findUserByName(userName) {
     return createPromiseWithUserApi('SELECT * FROM users WHERE userName = ?', userName);
 }
+export function deleteUser(userId) {
+    return createPromiseWithUserApi('DELETE FROM users WHERE id = ?', userId);
+}
 const isUserRegistration = function (param) {
     return param.userName !== undefined;
 };

@@ -43,6 +43,12 @@ export function login(req, res, next) {
         });
     });
 }
+export function remove(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield UserRepository.deleteUser(req.userId);
+        res.sendStatus(204);
+    });
+}
 function createJWT(userId) {
     return jwt.sign({ userId }, config.jwt.privateKey, {
         expiresIn: config.jwt.expirSecs,

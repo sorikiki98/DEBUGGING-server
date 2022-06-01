@@ -87,12 +87,6 @@ paths:
       responses:
         '204':
           description: Signout Succeeded
-        '405':
-          description: Method Not Allowed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorApiResponse'
   /user/mypage:
     get:
       tags:
