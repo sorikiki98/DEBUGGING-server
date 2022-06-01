@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
 import { config } from '../config.js';
+import { UserRegistration, UserLogin } from '../types/index.js';
 
 export async function createUser(
 	req: Request,

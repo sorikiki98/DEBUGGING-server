@@ -1,4 +1,5 @@
 import { pool } from '../db/database.js';
+// Todo: integrate with createPromiseWithBug
 export function getBugs() {
     return new Promise((resolve, reject) => {
         pool.query('SELECT * FROM bugs', (error, result) => {

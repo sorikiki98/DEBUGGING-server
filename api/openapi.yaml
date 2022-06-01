@@ -17,7 +17,6 @@ tags:
     description: Methods to access company information and manage company interests and reservation
   - name: products
     description: Methods to access product information and manage product interests
-
 paths:
   /user/signup:
     post:

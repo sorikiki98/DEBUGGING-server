@@ -1,5 +1,7 @@
 import { pool } from '../db/database.js';
+import { UserRegistration, User } from '../types/index.js';
 
+// Todo: integrate with createPromiseWithUser function
 export function createUser(user: UserRegistration): Promise<number> {
 	const {
 		userName,
@@ -34,18 +36,22 @@ export function createUser(user: UserRegistration): Promise<number> {
 	});
 }
 
+export function findUserById(userId: number): Promise<User> {
+	return createPromiseWithUser(userId, 'SELECT * FROM users WHERE id = ?');
+}
+
 export function findUserByName(userName: string): Promise<User> {
+	return createPromiseWithUser(userName, 'SELECT * FROM users WHERE user_name = ?');
+}
+
+function createPromiseWithUser(param: number | string, query: string): Promise<User> {
 	return new Promise((resolve, reject) => {
-		pool.query(
-			'SELECT * FROM users WHERE user_name = ?',
-			userName,
-			(error, result: User[]) => {
-				if (error) {
-					console.log(error.sqlMessage);
-					reject(error);
-				}
-				resolve(result[0]);
+		pool.query(query, param, (error, result: User[]) => {
+			if (error) {
+				console.log(error.sqlMessage);
+				reject(error);
 			}
-		);
+			resolve(result[0]);
+		});
 	});
 }

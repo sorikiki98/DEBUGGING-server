@@ -1,6 +1,8 @@
 import { MysqlError } from 'mysql';
 import { pool } from '../db/database.js';
+import { Bug } from '../types/index.js';
 
+// Todo: integrate with createPromiseWithBug
 export function getBugs(): Promise<Bug[]> {
 	return new Promise((resolve, reject) => {
 		pool.query(
