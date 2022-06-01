@@ -1,24 +1,23 @@
 import { pool } from '../db/database.js';
-// Todo: integrate with createPromiseWithBug
 export function getBugs() {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM bugs', (error, result) => {
-            if (error) {
-                console.log(error.sqlMessage);
-                reject(error);
-            }
-            resolve(result);
-        });
-    });
+    return createPromiseWithBugApi('SELECT * FROM bugs');
 }
 export function getBug(bugId) {
+    return createPromiseWithBugApi('SELECT * FROM bugs WHERE id = ?', bugId);
+}
+function createPromiseWithBugApi(query, param) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM bugs WHERE id = ?', bugId, (error, result) => {
+        pool.query(query, param, (error, result) => {
             if (error) {
                 console.log(error.sqlMessage);
                 reject(error);
             }
-            resolve(result[0]);
+            if (typeof param == 'string') {
+                resolve(result[0]);
+            }
+            else {
+                resolve(result);
+            }
         });
     });
 }
