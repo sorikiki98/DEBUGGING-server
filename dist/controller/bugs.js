@@ -23,4 +23,10 @@ export function getBug(req, res, next) {
         res.status(200).json(bug);
     });
 }
+export function survey(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield BugsRepository.addSurveyResult(req.userId, req.params.bug_id);
+        res.sendStatus(201);
+    });
+}
 //# sourceMappingURL=bugs.js.map

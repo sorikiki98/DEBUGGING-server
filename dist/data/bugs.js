@@ -5,6 +5,10 @@ export function getBugs() {
 export function getBug(bugId) {
     return createPromiseWithBugApi('SELECT * FROM bugs WHERE id = ?', bugId);
 }
+export function addSurveyResult(userId, bugId) {
+    const survey = { userId, bugId, surveyDate: new Date() };
+    return createPromiseWithBugApi('INSERT INTO surveys SET ?', survey);
+}
 function createPromiseWithBugApi(query, param) {
     return new Promise((resolve, reject) => {
         pool.query(query, param, (error, result) => {

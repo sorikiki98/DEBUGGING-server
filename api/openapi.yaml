@@ -238,7 +238,7 @@ paths:
         - bugs
       summary: Add a survey result showing a specific bug information
       description: Add one survey item with an inferred bug based on the survey result.
-      operationId: addSurvey
+      operationId: survey
       parameters:
         - name: bug_id
           in: path
@@ -248,10 +248,6 @@ paths:
       responses:
         '201':
           description: Survey Result Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BugInformation'
   /products:
     get:
       tags:

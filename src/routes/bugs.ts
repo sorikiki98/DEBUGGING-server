@@ -6,5 +6,6 @@ const bugsRouter = express.Router();
 
 bugsRouter.get('/', isAuth, BugsController.getBugs);
 bugsRouter.get('/:bug_id', isAuth , BugsController.getBug);
+bugsRouter.post('/survey/:bug_id', isAuth, BugsController.survey);
 
 export default bugsRouter;

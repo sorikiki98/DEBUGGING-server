@@ -14,3 +14,8 @@ export async function getBug(req: Request, res: Response, next: NextFunction) {
 	}
 	res.status(200).json(bug);
 }
+
+export async function survey(req: Request, res: Response, next: NextFunction) {
+	await BugsRepository.addSurveyResult(req.userId!, req.params.bug_id);
+	res.sendStatus(201);
+}

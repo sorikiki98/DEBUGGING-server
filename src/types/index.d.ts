@@ -18,6 +18,12 @@ export type Bug = {
 	surveyResult: string;
 };
 
+export type Survey = {
+	userId: number,
+	bugId: string,
+	surveyDate: Date
+}
+
 export type UserRegistration = {
 	userName: string;
 	password: string;
