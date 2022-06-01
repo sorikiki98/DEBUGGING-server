@@ -1,39 +1,29 @@
 import { pool } from '../db/database.js';
-// Todo: integrate with createPromiseWithUser function
 export function createUser(user) {
-    const { userName, password, contactNumbers, email, address, sizeOfHouse, numOfRooms, } = user;
-    return new Promise((resolve, reject) => {
-        pool.query('INSERT INTO users (user_name, password, contact_numbers, email, address, size_of_house, num_of_rooms) VALUES (?, ?, ?, ?, ?, ?, ?)', [
-            userName,
-            password,
-            contactNumbers,
-            email,
-            address,
-            sizeOfHouse,
-            numOfRooms,
-        ], (error, result) => {
-            if (error) {
-                console.log(error.sqlMessage);
-                reject(error);
-            }
-            resolve(result['insertId']);
-        });
-    });
+    return createPromiseWithUser('INSERT INTO users SET ?', user);
 }
 export function findUserById(userId) {
-    return createPromiseWithUser(userId, 'SELECT * FROM users WHERE id = ?');
+    return createPromiseWithUser('SELECT * FROM users WHERE id = ?', userId);
 }
 export function findUserByName(userName) {
-    return createPromiseWithUser(userName, 'SELECT * FROM users WHERE user_name = ?');
+    return createPromiseWithUser('SELECT * FROM users WHERE userName = ?', userName);
 }
-function createPromiseWithUser(param, query) {
+const isUserRegistration = function (param) {
+    return param.userName !== undefined;
+};
+function createPromiseWithUser(query, param) {
     return new Promise((resolve, reject) => {
         pool.query(query, param, (error, result) => {
             if (error) {
                 console.log(error.sqlMessage);
                 reject(error);
             }
-            resolve(result[0]);
+            if (isUserRegistration(param)) {
+                resolve(result['inserId']);
+            }
+            else {
+                resolve(result[0]);
+            }
         });
     });
 }
