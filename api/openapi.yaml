@@ -129,11 +129,6 @@ paths:
       responses:
         '201':
           description: Company Interest Item Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompanyInformation'
-
         '409':
           description: Already Added With Same User and Company
           content:
@@ -155,11 +150,6 @@ paths:
       responses:
         '204':
           description: Company Interest Item Deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompanyInformation'
-
         '404':
           description: Unexisted Company Interest Item
           content:

@@ -48,6 +48,11 @@ export type ReservationForm = {
 	extraMessage?: string;
 };
 
+export type ReservationWithFK = ReservationForm & {
+	userId: number;
+	companyId: string;
+};
+
 export type ReservationDetail = ReservationForm & {
 	userId: number;
 	userName: string;
@@ -65,6 +70,12 @@ export type ReservationDetail = ReservationForm & {
 	availableArea: string;
 	availableCounselTime: string;
 	thumbnail?: string;
+};
+
+export type CompanyInterest = {
+	id: number;
+	userId: number;
+	companyId: number;
 };
 
 export type UserRegistration = {
