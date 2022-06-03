@@ -11,6 +11,9 @@ export function reserveCompany(userId, companyId, reservation) {
         resolve(result['insertId']);
     });
 }
+export function getReservationDetail(userId) {
+    return createPromiseWithDBQuery('SELECT * FROM reservations WHERE userId = ?', userId, (resolve, result) => resolve(result[0]));
+}
 export function findCompanyById(companyId) {
     return createPromiseWithDBQuery('SELECT * FROM companies WHERE id = ?', companyId, (resolve, result) => resolve(result[0]));
 }
@@ -27,5 +30,11 @@ export function addCompanyInterest(userId, companyId) {
 }
 export function removeCompanyInterest(userId, companyId) {
     return createPromiseWithDBQuery('DELETE FROM companyinterests WHERE userId = ? AND companyId = ?', [userId, companyId], (resolve, result) => resolve(result));
+}
+export function getNumberOfReservationsOfUser(userId) {
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM reservations WHERE userId = ?', userId, (resolve, result) => resolve(result));
+}
+export function getNumberOfInterestedCompaniesOfUser(userId) {
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE userId = ?', userId, (resolve, result) => resolve(result));
 }
 //# sourceMappingURL=companies.js.map

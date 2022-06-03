@@ -1,7 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import * as CompaniesRepository from '../data/companies.js';
 import * as UserRepository from '../data/user.js';
-import { User, Company, CompanyInterest, ReservationForm } from '../types/index.js';
+import {
+	User,
+	Company,
+	CompanyInterest,
+	ReservationForm,
+	ReservationDetail,
+} from '../types/index.js';
 
 export async function getCompanies(
 	req: Request,
@@ -18,18 +24,30 @@ export async function getCompanies(
 
 export async function reserve(req: Request, res: Response, next: NextFunction) {
 	const reservation = req.body as ReservationForm;
-	const id = await CompaniesRepository.reserveCompany(
+	const reservationId = await CompaniesRepository.reserveCompany(
 		req.userId!,
 		req.params.company_id,
 		reservation
+	);
+
+	res.status(201).json(reservationId);
+}
+
+export async function checkReservation(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const reservation = await CompaniesRepository.getReservationDetail(
+		req.userId!
 	);
 	const user = await UserRepository.findUserById(req.userId!);
 	const company = await CompaniesRepository.findCompanyById(
 		req.params.company_id
 	);
-	const reservationDetail = createReservationDetail(id, user, company, reservation);
-	
-	res.status(201).json(reservationDetail);
+	const reservationDetail = createReservationDetail(reservation, user, company);
+
+	res.status(200).json(reservationDetail);
 }
 
 export async function addCompanyInterest(
@@ -83,11 +101,12 @@ function updateCompanyInterested(
 }
 
 function createReservationDetail(
-	id: number,
+	reservation: ReservationDetail,
 	user: User,
-	company: Company,
-	reservation: ReservationForm
+	company: Company
 ) {
+	const reservationInfo = { ...reservation, reservationDateTime: new Date() };
+
 	const userInfo = {
 		userId: user.id,
 		userName: user.userName,
@@ -110,7 +129,5 @@ function createReservationDetail(
 		thumbnail: company.thumbnail,
 	};
 
-	const reservationInfo = { ...reservation, reservationDateTime: new Date() };
-
-	return { id, ...userInfo, ...companyInfo, ...reservationInfo };
+	return { ...reservationInfo, ...userInfo, ...companyInfo };
 }

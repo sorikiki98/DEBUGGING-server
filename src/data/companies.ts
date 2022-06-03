@@ -1,8 +1,4 @@
-import {
-	Company,
-	CompanyInterest,
-	ReservationForm,
-} from '../types/index.js';
+import { Company, CompanyInterest, ReservationDetail, ReservationForm } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getCompanies(): Promise<Company[]> {
@@ -10,7 +6,7 @@ export function getCompanies(): Promise<Company[]> {
 		'SELECT * FROM companies',
 		undefined,
 		(resolve, result: Company[]) => resolve(result)
-	)
+	);
 }
 
 export function getCompanyInterestsByUserId(
@@ -36,6 +32,14 @@ export function reserveCompany(
 			resolve(result['insertId']);
 		}
 	);
+}
+
+export function getReservationDetail(userId: number): Promise<ReservationDetail> {
+	return createPromiseWithDBQuery<ReservationDetail>(
+		'SELECT * FROM reservations WHERE userId = ?',
+		userId,
+		(resolve, result) => resolve(result[0])
+	)
 }
 
 export function findCompanyById(companyId: string): Promise<Company> {
@@ -78,6 +82,24 @@ export function removeCompanyInterest(
 	return createPromiseWithDBQuery<void>(
 		'DELETE FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
+		(resolve, result) => resolve(result)
+	);
+}
+
+export function getNumberOfReservationsOfUser(userId: number): Promise<number> {
+	return createPromiseWithDBQuery(
+		'SELECT COUNT(*) FROM reservations WHERE userId = ?',
+		userId,
+		(resolve, result) => resolve(result)
+	);
+}
+
+export function getNumberOfInterestedCompaniesOfUser(
+	userId: number
+): Promise<number> {
+	return createPromiseWithDBQuery(
+		'SELECT COUNT(*) FROM companyinterests WHERE userId = ?',
+		userId,
 		(resolve, result) => resolve(result)
 	);
 }
