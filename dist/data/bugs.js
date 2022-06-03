@@ -1,28 +1,12 @@
-import { pool } from '../db/database.js';
+import createPromiseWithDBQuery from '../util/promise.js';
 export function getBugs() {
-    return createPromiseWithBugApi('SELECT * FROM bugs');
+    return createPromiseWithDBQuery('SELECT * FROM bugs', undefined, (resolve, result) => resolve(result));
 }
 export function getBug(bugId) {
-    return createPromiseWithBugApi('SELECT * FROM bugs WHERE id = ?', bugId);
+    return createPromiseWithDBQuery('SELECT * FROM bugs WHERE id = ?', bugId, (resolve, result) => resolve(result[0]));
 }
 export function addSurveyResult(userId, bugId) {
     const survey = { userId, bugId, surveyDate: new Date() };
-    return createPromiseWithBugApi('INSERT INTO surveys SET ?', survey);
-}
-function createPromiseWithBugApi(query, param) {
-    return new Promise((resolve, reject) => {
-        pool.query(query, param, (error, result) => {
-            if (error) {
-                console.log(error.sqlMessage);
-                reject(error);
-            }
-            if (typeof param == 'string') {
-                resolve(result[0]);
-            }
-            else {
-                resolve(result);
-            }
-        });
-    });
+    return createPromiseWithDBQuery('INSERT INTO surveys SET ?', survey, (resolve, result) => resolve(result['insertId']));
 }
 //# sourceMappingURL=bugs.js.map

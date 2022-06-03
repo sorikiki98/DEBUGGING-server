@@ -1,23 +1,22 @@
-import { pool } from '../db/database.js';
 import {
 	Company,
 	CompanyInterest,
 	ReservationForm,
-	ReservationWithFK,
 } from '../types/index.js';
+import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getCompanies(): Promise<Company[]> {
-	return createPromiseWithCompany<Company[]>(
+	return createPromiseWithDBQuery<Company[]>(
 		'SELECT * FROM companies',
 		undefined,
 		(resolve, result: Company[]) => resolve(result)
-	);
+	)
 }
 
 export function getCompanyInterestsByUserId(
 	userId: number
 ): Promise<CompanyInterest[]> {
-	return createPromiseWithCompany<CompanyInterest[]>(
+	return createPromiseWithDBQuery<CompanyInterest[]>(
 		'SELECT * FROM companyinterests WHERE userId = ?',
 		userId,
 		(resolve, result: CompanyInterest[]) => resolve(result)
@@ -30,7 +29,7 @@ export function reserveCompany(
 	reservation: ReservationForm
 ): Promise<number> {
 	const reservationWithFK = { userId, companyId, ...reservation };
-	return createPromiseWithCompany<number>(
+	return createPromiseWithDBQuery<number>(
 		'INSERT INTO reservations SET ?',
 		reservationWithFK,
 		(resolve, result) => {
@@ -40,7 +39,7 @@ export function reserveCompany(
 }
 
 export function findCompanyById(companyId: string): Promise<Company> {
-	return createPromiseWithCompany<Company>(
+	return createPromiseWithDBQuery<Company>(
 		'SELECT * FROM companies WHERE id = ?',
 		companyId,
 		(resolve, result) => resolve(result[0])
@@ -51,7 +50,7 @@ export function findCompanyInterestById(
 	userId: number,
 	companyId: string
 ): Promise<boolean> {
-	return createPromiseWithCompany<boolean>(
+	return createPromiseWithDBQuery<boolean>(
 		'SELECT * FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
 		(resolve, result) => {
@@ -65,7 +64,7 @@ export function addCompanyInterest(
 	userId: number,
 	companyId: string
 ): Promise<number> {
-	return createPromiseWithCompany<number>(
+	return createPromiseWithDBQuery<number>(
 		'INSERT INTO companyinterests (userId, companyId) VALUES (?, ?)',
 		[userId, companyId],
 		(resolve, result) => resolve(result['insertId'])
@@ -76,44 +75,9 @@ export function removeCompanyInterest(
 	userId: number,
 	companyId: string
 ): Promise<void> {
-	return createPromiseWithCompany<void>(
+	return createPromiseWithDBQuery<void>(
 		'DELETE FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
 		(resolve, result) => resolve(result)
 	);
-}
-
-type CompanyInterestFK = [number, string];
-type DBQueryParamType =
-	| number
-	| string
-	| undefined
-	| ReservationWithFK
-	| CompanyInterestFK;
-type ResolveCallback<T> = (
-	resolve: (value: T | PromiseLike<T>) => void,
-	result: any
-) => any;
-type PromiseReturnType =
-	| Company
-	| Company[]
-	| CompanyInterest[]
-	| number
-	| boolean
-	| void;
-
-function createPromiseWithCompany<T = PromiseReturnType>(
-	query: string,
-	params: DBQueryParamType,
-	callback: ResolveCallback<T>
-): Promise<T> {
-	return new Promise((resolve, reject) => {
-		pool.query(query, params, (error, result) => {
-			if (error) {
-				console.log(error.sqlMessage);
-				reject(error);
-			}
-			callback(resolve, result);
-		});
-	});
 }

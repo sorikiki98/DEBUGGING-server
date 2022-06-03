@@ -1,49 +1,34 @@
-import { pool } from '../db/database.js';
 import { UserRegistration, User } from '../types/index.js';
+import createPromiseWithDBQuery from '../util/promise.js';
 
 export function createUser(user: UserRegistration): Promise<number> {
-	return createPromiseWithUserApi('INSERT INTO users SET ?', user);
+	return createPromiseWithDBQuery(
+		'INSERT INTO users SET ?',
+		user,
+		(resolve, result) => resolve(result['insertId'])
+	);
 }
 
 export function findUserById(userId: number): Promise<User> {
-	return createPromiseWithUserApi('SELECT * FROM users WHERE id = ?', userId);
+	return createPromiseWithDBQuery(
+		'SELECT * FROM users WHERE id = ?',
+		userId,
+		(resolve, result) => resolve(result[0])
+	);
 }
 
 export function findUserByName(userName: string): Promise<User> {
-	return createPromiseWithUserApi(
+	return createPromiseWithDBQuery(
 		'SELECT * FROM users WHERE userName = ?',
-		userName
+		userName,
+		(resolve, result) => resolve(result[0])
 	);
 }
 
 export function deleteUser(userId: number): Promise<undefined> {
-	return createPromiseWithUserApi('DELETE FROM users WHERE id = ?', userId);
-}
-
-type DBQueryParamType = number | string | UserRegistration;
-
-const isUserRegistration = function (
-	param: DBQueryParamType
-): param is UserRegistration {
-	return (param as UserRegistration).userName !== undefined;
-};
-
-function createPromiseWithUserApi<T = User | number>(
-	query: string,
-	param: DBQueryParamType
-): Promise<T> {
-	return new Promise((resolve, reject) => {
-		pool.query(query, param, (error, result) => {
-			if (error) {
-				console.log(error.sqlMessage);
-				reject(error);
-			}
-
-			if (isUserRegistration(param)) {
-				resolve(result['inserId']);
-			} else {
-				resolve(result[0]);
-			}
-		});
-	});
+	return createPromiseWithDBQuery(
+		'DELETE FROM users WHERE id = ?',
+		userId,
+		(resolve, result) => resolve(result)
+	);
 }

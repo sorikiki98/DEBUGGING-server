@@ -37,6 +37,8 @@ export type Company = {
 	isCompanyInterested?: boolean = false;
 };
 
+export type CompanyInterestFK = [number, string];
+
 export type ReservationForm = {
 	bugName: string;
 	firstFoundDate: Date;
@@ -102,3 +104,35 @@ export type UserAuthenticationSuccess = {
 };
 
 export type JwtPayloadWithUserId = Jwt.JwtPayload & { userId: number };
+
+export type ResolveCallback<T> = (
+	resolve: (value: T | PromiseLike<T>) => void,
+	result: any
+) => any;
+
+export type CompanyQueryParamType =
+	| number
+	| string
+	| undefined
+	| ReservationWithFK
+	| CompanyInterestFK;
+
+export type BugQueryParamType = string | Survey;
+
+export type UserQueryParamType = number | string | UserRegistration;
+
+export type QueryParamType = CompanyQueryParamType | BugQueryParamType | UserQueryParamType;
+
+export type CompanyPromiseReturnType =
+	| Company
+	| Company[]
+	| CompanyInterest[]
+	| number
+	| boolean
+	| void;
+
+export type BugPromiseReturnType = Bug | Bug[];
+
+export type UserPromiseReturnType = number | User;
+
+export type PromiseReturnType = CompanyPromiseReturnType | BugPromiseReturnType | UserPromiseReturnType;
