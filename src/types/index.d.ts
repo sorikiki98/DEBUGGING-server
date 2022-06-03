@@ -80,6 +80,24 @@ export type CompanyInterest = {
 	companyId: number;
 };
 
+export type Product = {
+	id: number;
+	name: string;
+	type: string;
+	shortIntro: string;
+	description: string;
+	thumbnail?: string;
+	isProductInterested?: boolean = false;
+};
+
+export type ProductInterestFK = [number, string];
+
+export type ProductInterest = {
+	id: number;
+	userId: number;
+	productId: number;
+};
+
 export type UserRegistration = {
 	userName: string;
 	password: string;
@@ -121,7 +139,17 @@ export type BugQueryParamType = string | Survey;
 
 export type UserQueryParamType = number | string | UserRegistration;
 
-export type QueryParamType = CompanyQueryParamType | BugQueryParamType | UserQueryParamType;
+export type ProductQueryParamType =
+	| number
+	| string
+	| undefined
+	| ProductInterestFK;
+
+export type QueryParamType =
+	| CompanyQueryParamType
+	| BugQueryParamType
+	| UserQueryParamType
+	| ProductQueryParamType;
 
 export type CompanyPromiseReturnType =
 	| Company
@@ -135,4 +163,14 @@ export type BugPromiseReturnType = Bug | Bug[];
 
 export type UserPromiseReturnType = number | User;
 
-export type PromiseReturnType = CompanyPromiseReturnType | BugPromiseReturnType | UserPromiseReturnType;
+export type ProductPromiseReturnType =
+	| Product
+	| Product[]
+	| ProductInterest[]
+	| boolean;
+
+export type PromiseReturnType =
+	| CompanyPromiseReturnType
+	| BugPromiseReturnType
+	| UserPromiseReturnType
+	| ProductPromiseReturnType;

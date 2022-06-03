@@ -76,7 +76,7 @@ function updateCompanyInterested(
 	const interestedCompanyIds = companyInterests.map(
 		(companyInterest) => companyInterest.companyId
 	);
-	companies.map(
+	companies.forEach(
 		(company) =>
 			(company.isCompanyInterested = interestedCompanyIds.includes(company.id))
 	);

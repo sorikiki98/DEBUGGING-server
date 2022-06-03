@@ -53,7 +53,7 @@ function isCompanyInterested(req) {
 }
 function updateCompanyInterested(companies, companyInterests) {
     const interestedCompanyIds = companyInterests.map((companyInterest) => companyInterest.companyId);
-    companies.map((company) => (company.isCompanyInterested = interestedCompanyIds.includes(company.id)));
+    companies.forEach((company) => (company.isCompanyInterested = interestedCompanyIds.includes(company.id)));
 }
 function createReservationDetail(id, user, company, reservation) {
     const userInfo = {
