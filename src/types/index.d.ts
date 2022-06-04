@@ -158,7 +158,7 @@ export type CompanyQueryParamType =
 	| ReservationWithFK
 	| CompanyInterestFK;
 
-export type BugQueryParamType = string | Survey;
+export type BugQueryParamType = undefined | string | Survey;
 
 export type UserQueryParamType = number | string | UserRegistration;
 
@@ -178,19 +178,22 @@ export type CompanyPromiseReturnType =
 	| Company
 	| Company[]
 	| CompanyInterest[]
+	| ReservationDetail[]
 	| number
 	| boolean
-	| void;
+	| undefined;
 
-export type BugPromiseReturnType = Bug | Bug[];
+export type BugPromiseReturnType = number | Bug | Bug[];
 
-export type UserPromiseReturnType = number | User;
+export type UserPromiseReturnType = number | undefined | User;
 
 export type ProductPromiseReturnType =
 	| Product
 	| Product[]
 	| ProductInterest[]
-	| boolean;
+	| boolean
+	| number
+	| undefined;
 
 export type PromiseReturnType =
 	| CompanyPromiseReturnType

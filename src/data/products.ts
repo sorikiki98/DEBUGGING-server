@@ -57,8 +57,8 @@ export function addProductInterest(
 export function removeProductInterest(
 	userId: number,
 	productId: string
-): Promise<void> {
-	return createPromiseWithDBQuery(
+): Promise<undefined> {
+	return createPromiseWithDBQuery<undefined>(
 		'DELETE FROM productinterests WHERE userId = ? AND productId = ?',
 		[userId, productId],
 		(resolve, result) => resolve(result)

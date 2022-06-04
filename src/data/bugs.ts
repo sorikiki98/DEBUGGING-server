@@ -2,7 +2,7 @@ import { Bug } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getBugs(): Promise<Bug[]> {
-	return createPromiseWithDBQuery(
+	return createPromiseWithDBQuery<Bug[]>(
 		'SELECT * FROM bugs',
 		undefined,
 		(resolve, result) => resolve(result)
@@ -10,16 +10,16 @@ export function getBugs(): Promise<Bug[]> {
 }
 
 export function getBug(bugId: string): Promise<Bug> {
-	return createPromiseWithDBQuery(
+	return createPromiseWithDBQuery<Bug>(
 		'SELECT * FROM bugs WHERE id = ?',
 		bugId,
 		(resolve, result) => resolve(result[0])
 	);
 }
 
-export function addSurveyResult(userId: number, bugId: string) {
+export function addSurveyResult(userId: number, bugId: string): Promise<number> {
 	const survey = { userId, bugId, surveyDate: new Date() };
-	return createPromiseWithDBQuery(
+	return createPromiseWithDBQuery<number>(
 		'INSERT INTO surveys SET ?',
 		survey,
 		(resolve, result) => resolve(result['insertId'])

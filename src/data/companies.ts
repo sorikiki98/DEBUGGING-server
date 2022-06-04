@@ -85,8 +85,8 @@ export function addCompanyInterest(
 export function removeCompanyInterest(
 	userId: number,
 	companyId: string
-): Promise<void> {
-	return createPromiseWithDBQuery<void>(
+): Promise<undefined> {
+	return createPromiseWithDBQuery<undefined>(
 		'DELETE FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
 		(resolve, result) => resolve(result)
@@ -94,7 +94,7 @@ export function removeCompanyInterest(
 }
 
 export function getNumberOfReservationsOfUser(userId: number): Promise<number> {
-	return createPromiseWithDBQuery(
+	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM reservations WHERE userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
@@ -104,7 +104,7 @@ export function getNumberOfReservationsOfUser(userId: number): Promise<number> {
 export function getNumberOfInterestedCompaniesOfUser(
 	userId: number
 ): Promise<number> {
-	return createPromiseWithDBQuery(
+	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM companyinterests WHERE userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
