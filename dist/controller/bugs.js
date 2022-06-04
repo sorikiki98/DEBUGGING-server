@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as BugsRepository from '../data/bugs.js';
 export function getBugs(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bugs = yield BugsRepository.getBugs();
+        const bugs = (yield BugsRepository.getBugs());
         res.status(200).json(bugs);
     });
 }
 export function getBug(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bug = yield BugsRepository.getBug(req.params.bug_id);
+        const bug = (yield BugsRepository.getBug(req.params.bug_id));
         if (bug == null) {
             return res.sendStatus(404);
         }

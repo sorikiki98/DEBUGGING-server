@@ -9,7 +9,7 @@ export async function getProducts(
 ) {
 	const { getProducts, getProductInterestsByUserId } = ProductsRepository;
 	const products = await getProducts();
-    const productInterests = await getProductInterestsByUserId(req.userId!);
+	const productInterests = await getProductInterestsByUserId(req.userId!);
 
 	updateProductInterested(products, productInterests);
 	res.status(200).json(products);
@@ -22,6 +22,9 @@ export async function getProduct(
 ) {
 	const productId = req.params.product_id;
 	const product = await ProductsRepository.getProduct(productId);
+	if (product == null) {
+		return res.sendStatus(404);
+	}
 	const isInterested = await isProductInterested(req);
 	product.isProductInterested = isInterested;
 
@@ -48,7 +51,7 @@ export async function removeCompanyInterest(
 	res: Response,
 	next: NextFunction
 ) {
-    if (!(await isProductInterested(req))) {
+	if (!(await isProductInterested(req))) {
 		return res.sendStatus(404);
 	}
 	await ProductsRepository.removeProductInterest(

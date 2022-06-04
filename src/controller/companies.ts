@@ -41,6 +41,9 @@ export async function checkReservation(
 	const reservation = await CompaniesRepository.getReservationDetail(
 		req.params.reservation_id
 	);
+	if (reservation == null) {
+		return res.sendStatus(404);
+	}
 	const user = await UserRepository.findUserById(req.userId!);
 	const company = await CompaniesRepository.findCompanyById(
 		reservation.companyId.toString()

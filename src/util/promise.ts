@@ -8,11 +8,8 @@ export default function createPromiseWithDBQuery<T = PromiseReturnType>(
 ): Promise<T> {
 	return new Promise((resolve, reject) => {
 		pool.query(query, params, (error, result) => {
-			if (error) {
-				console.log(error.sqlMessage);
-				reject(error);
-			}
-			callback(resolve, result);
+			if (error) reject(error);
+			else callback(resolve, result);
 		});
 	});
 }

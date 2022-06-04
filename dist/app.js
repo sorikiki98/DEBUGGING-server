@@ -2,6 +2,7 @@ import express from 'express';
 import yamljs from 'yamljs';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
+import 'express-async-errors';
 import BugsRouter from './routes/bugs.js';
 import UserRouter from './routes/user.js';
 import CompaniesRouter from './routes/companies.js';

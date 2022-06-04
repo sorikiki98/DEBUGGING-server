@@ -93,7 +93,7 @@ paths:
         - user
       summary: Fetch user-related information in mypage
       description: This includes both user-generated information and current status about application usages.
-      operationId: getUserDetails
+      operationId: getMyPage
       responses:
         '200':
           description: User Information Successfully Fetched
@@ -129,6 +129,10 @@ paths:
       responses:
         '201':
           description: Company Interest Item Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsertId'
         '409':
           description: Already Added With Same User and Company
           content:
@@ -181,13 +185,40 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReservationDetail'
+                $ref: '#/components/schemas/InsertId'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+  /companies/reservation/{reservation_id}:
+    get:
+      tags:
+        - companies
+      summary: Fetch user's reservation information about a company
+      description: Show a bunch of information including user, company and reservation.
+      operationId: checkReservation
+      parameters:
+        - name: reservation_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully Fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDetail'
+        '404':
+          description: Unexisted Reservation Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+          
   /bugs:
     get:
       tags:
@@ -222,6 +253,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BugInformation'
+        '404':
+          description: Unexisted Bug Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /bugs/survey/{bug_id}:
     post:
       tags:
@@ -238,6 +275,11 @@ paths:
       responses:
         '201':
           description: Survey Result Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsertId'
+          
   /products:
     get:
       tags:
@@ -272,6 +314,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductInformation'
+        '404':
+          description: Unexisted Product Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /products/interest/{product_id}:
     post:
       tags:
@@ -291,7 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductInformation'
+                $ref: '#/components/schemas/InsertId'
 
         '409':
           description: Already Added With Same User and Product
@@ -314,11 +362,6 @@ paths:
       responses:
         '204':
           description: Product Interest Item Deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductInformation'
-
         '404':
           description: Unexisted Product Interest Item
           content:
@@ -674,6 +717,16 @@ components:
           type: string
           format: url
           nullable: true
+        processState:
+          type: integer
+        engineerName:
+          type: string
+        engineerContactNumbers:
+          type: string
+        expectedEstimate:
+          type: string
+        visitDateTime:
+          type: string
       required:
         - id
         - bugName
@@ -718,6 +771,11 @@ components:
         availableArea: 서울, 경기, 인천, 충청북도
         availableCounselTime: 24시간 고객센터 상담 가능
         thumbnail: http://www.hcmaster.com/images/common/top_logo.gif
+        processState: 1
+        engineerName: 김철수
+        engineerContactNumbers: 010-1234-5678
+        expectedEstimate: 100000
+        visitDateTime: '2022-05-12'
     BugInformation:
       type: object
       properties:
@@ -797,6 +855,26 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/ProductInformation'
+    InsertId:
+      type: object
+      properties:
+        insertId: 
+          type: integer
+          format: int64
+      required: 
+        - insertId
+      example:
+        insertId: 1
+    NumberOfInterestedUsers:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+      required: 
+        - total
+      example:
+        total: 10
     ErrorApiResponse:
       type: object
       properties:

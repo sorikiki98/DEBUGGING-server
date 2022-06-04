@@ -2,11 +2,10 @@ import { pool } from '../db/database.js';
 export default function createPromiseWithDBQuery(query, params, callback) {
     return new Promise((resolve, reject) => {
         pool.query(query, params, (error, result) => {
-            if (error) {
-                console.log(error.sqlMessage);
+            if (error)
                 reject(error);
-            }
-            callback(resolve, result);
+            else
+                callback(resolve, result);
         });
     });
 }
