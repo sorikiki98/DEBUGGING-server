@@ -11,8 +11,8 @@ export function reserveCompany(userId, companyId, reservation) {
         resolve(result['insertId']);
     });
 }
-export function getReservationDetail(userId) {
-    return createPromiseWithDBQuery('SELECT * FROM reservations WHERE userId = ?', userId, (resolve, result) => resolve(result[0]));
+export function getReservationDetail(reservationId) {
+    return createPromiseWithDBQuery('SELECT * FROM reservations WHERE id = ?', reservationId, (resolve, result) => resolve(result[0]));
 }
 export function findCompanyById(companyId) {
     return createPromiseWithDBQuery('SELECT * FROM companies WHERE id = ?', companyId, (resolve, result) => resolve(result[0]));

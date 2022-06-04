@@ -11,4 +11,9 @@ export function findUserByName(userName) {
 export function deleteUser(userId) {
     return createPromiseWithDBQuery('DELETE FROM users WHERE id = ?', userId, (resolve, result) => resolve(result));
 }
+//export function getUserDetail(userId: number): Promise<UserDetail> {
+//	return createPromiseWithDBQuery(
+//
+//)
+//}
 //# sourceMappingURL=user.js.map

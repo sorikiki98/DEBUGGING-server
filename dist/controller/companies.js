@@ -27,9 +27,9 @@ export function reserve(req, res, next) {
 }
 export function checkReservation(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const reservation = yield CompaniesRepository.getReservationDetail(req.userId);
+        const reservation = yield CompaniesRepository.getReservationDetail(req.params.reservation_id);
         const user = yield UserRepository.findUserById(req.userId);
-        const company = yield CompaniesRepository.findCompanyById(req.params.company_id);
+        const company = yield CompaniesRepository.findCompanyById(reservation.companyId.toString());
         const reservationDetail = createReservationDetail(reservation, user, company);
         res.status(200).json(reservationDetail);
     });

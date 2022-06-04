@@ -1,4 +1,9 @@
-import { Company, CompanyInterest, ReservationDetail, ReservationForm } from '../types/index.js';
+import {
+	Company,
+	CompanyInterest,
+	ReservationDetail,
+	ReservationForm,
+} from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getCompanies(): Promise<Company[]> {
@@ -34,12 +39,14 @@ export function reserveCompany(
 	);
 }
 
-export function getReservationDetail(userId: number): Promise<ReservationDetail> {
+export function getReservationDetail(
+	reservationId: string
+): Promise<ReservationDetail> {
 	return createPromiseWithDBQuery<ReservationDetail>(
-		'SELECT * FROM reservations WHERE userId = ?',
-		userId,
+		'SELECT * FROM reservations WHERE id = ?',
+		reservationId,
 		(resolve, result) => resolve(result[0])
-	)
+	);
 }
 
 export function findCompanyById(companyId: string): Promise<Company> {

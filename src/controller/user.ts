@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
+import * as CompanyRepository from '../data/companies.js';
 import { config } from '../config.js';
 import { UserRegistration, UserLogin } from '../types/index.js';
 
@@ -52,6 +53,21 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function remove(req: Request, res: Response, next: NextFunction) {
 	await UserRepository.deleteUser(req.userId!);
 	res.sendStatus(204);
+}
+
+export async function getMyPage(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const user = await UserRepository.findUserById(req.userId!);
+	const accumulatedNumOfUsages = await CompanyRepository.getNumberOfReservationsOfUser(
+		req.userId!
+	);
+	const numberOfInterestedCompanies = await CompanyRepository.getNumberOfInterestedCompaniesOfUser(
+		req.userId!
+	);
+	
 }
 
 function createJWT(userId: number): string {

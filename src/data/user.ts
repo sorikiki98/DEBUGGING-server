@@ -1,4 +1,4 @@
-import { UserRegistration, User } from '../types/index.js';
+import { UserRegistration, User, UserDetail } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function createUser(user: UserRegistration): Promise<number> {
@@ -32,3 +32,9 @@ export function deleteUser(userId: number): Promise<undefined> {
 		(resolve, result) => resolve(result)
 	);
 }
+
+//export function getUserDetail(userId: number): Promise<UserDetail> {
+//	return createPromiseWithDBQuery(
+	//
+	//)
+//}

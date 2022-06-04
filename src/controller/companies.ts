@@ -39,11 +39,11 @@ export async function checkReservation(
 	next: NextFunction
 ) {
 	const reservation = await CompaniesRepository.getReservationDetail(
-		req.userId!
+		req.params.reservation_id
 	);
 	const user = await UserRepository.findUserById(req.userId!);
 	const company = await CompaniesRepository.findCompanyById(
-		req.params.company_id
+		reservation.companyId.toString()
 	);
 	const reservationDetail = createReservationDetail(reservation, user, company);
 
