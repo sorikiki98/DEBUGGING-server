@@ -28,6 +28,9 @@ export function reserve(req, res, next) {
 export function checkReservation(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const reservation = yield CompaniesRepository.getReservationDetail(req.params.reservation_id);
+        if (reservation == null) {
+            return res.sendStatus(404);
+        }
         const user = yield UserRepository.findUserById(req.userId);
         const company = yield CompaniesRepository.findCompanyById(reservation.companyId.toString());
         const reservationDetail = createReservationDetail(reservation, user, company);

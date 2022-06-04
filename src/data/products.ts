@@ -1,4 +1,4 @@
-import { Product, ProductInterest } from '../types/index.js';
+import { Product, ProductInterest, ProductItem } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getProducts(): Promise<Product[]> {
@@ -48,9 +48,7 @@ export function addProductInterest(
 	return createPromiseWithDBQuery(
 		'INSERT INTO productinterests (userId, productId) VALUES (?, ?)',
 		[userId, productId],
-		(resolve, result) => {
-			resolve(result['insertId'])
-		}
+		(resolve, result) => resolve(result['insertId'])
 	);
 }
 
@@ -61,6 +59,14 @@ export function removeProductInterest(
 	return createPromiseWithDBQuery<undefined>(
 		'DELETE FROM productinterests WHERE userId = ? AND productId = ?',
 		[userId, productId],
+		(resolve, result) => resolve(result)
+	);
+}
+
+export function getProductItemsOfUser(userId: number): Promise<ProductItem[]> {
+	return createPromiseWithDBQuery<ProductItem[]>(
+		'SELECT p.id, p.name FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
+		userId,
 		(resolve, result) => resolve(result)
 	);
 }

@@ -10,7 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as UserRepository from '../data/user.js';
+import * as BugsRepository from '../data/bugs.js';
 import * as CompanyRepository from '../data/companies.js';
+import * as ProductRepository from '../data/products.js';
 import { config } from '../config.js';
 export function createUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -52,9 +54,22 @@ export function remove(req, res, next) {
 }
 export function getMyPage(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield UserRepository.findUserById(req.userId);
-        const accumulatedNumOfUsages = yield CompanyRepository.getNumberOfReservationsOfUser(req.userId);
-        const numberOfInterestedCompanies = yield CompanyRepository.getNumberOfInterestedCompaniesOfUser(req.userId);
+        const { findUserById } = UserRepository;
+        const { getNumberOfReservationsOfUser, getNumberOfInterestedCompaniesOfUser, getReservationItemsOfUser, } = CompanyRepository;
+        const { getSurveyItemsOfUser } = BugsRepository;
+        const { getProductItemsOfUser } = ProductRepository;
+        const user = yield findUserById(req.userId);
+        const accumulatedNumOfUsages = yield getNumberOfReservationsOfUser(req.userId);
+        const numberOfInterestedCompanies = yield getNumberOfInterestedCompaniesOfUser(req.userId);
+        const surveyList = yield getSurveyItemsOfUser(req.userId);
+        const productList = yield getProductItemsOfUser(req.userId);
+        const reservationList = yield getReservationItemsOfUser(req.userId);
+        const userDetail = Object.assign(Object.assign({}, user), { accumulatedNumOfUsages,
+            numberOfInterestedCompanies,
+            surveyList,
+            productList,
+            reservationList });
+        res.status(200).json(userDetail);
     });
 }
 function createJWT(userId) {

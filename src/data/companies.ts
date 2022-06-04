@@ -3,6 +3,7 @@ import {
 	CompanyInterest,
 	ReservationDetail,
 	ReservationForm,
+	ReservationItem,
 } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
@@ -97,7 +98,7 @@ export function getNumberOfReservationsOfUser(userId: number): Promise<number> {
 	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM reservations WHERE userId = ?',
 		userId,
-		(resolve, result) => resolve(result)
+		(resolve, result) => resolve(result[0]['COUNT(*)'])
 	);
 }
 
@@ -106,6 +107,16 @@ export function getNumberOfInterestedCompaniesOfUser(
 ): Promise<number> {
 	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM companyinterests WHERE userId = ?',
+		userId,
+		(resolve, result) => resolve(result[0]['COUNT(*)'])
+	);
+}
+
+export function getReservationItemsOfUser(
+	userId: number
+): Promise<ReservationItem[]> {
+	return createPromiseWithDBQuery<ReservationItem[]>(
+		'SELECT r.id, r.processState, c.name FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);

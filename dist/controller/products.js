@@ -21,6 +21,9 @@ export function getProduct(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const productId = req.params.product_id;
         const product = yield ProductsRepository.getProduct(productId);
+        if (product == null) {
+            return res.sendStatus(404);
+        }
         const isInterested = yield isProductInterested(req);
         product.isProductInterested = isInterested;
         res.status(200).json(product);

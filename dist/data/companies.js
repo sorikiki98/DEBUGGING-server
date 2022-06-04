@@ -32,9 +32,12 @@ export function removeCompanyInterest(userId, companyId) {
     return createPromiseWithDBQuery('DELETE FROM companyinterests WHERE userId = ? AND companyId = ?', [userId, companyId], (resolve, result) => resolve(result));
 }
 export function getNumberOfReservationsOfUser(userId) {
-    return createPromiseWithDBQuery('SELECT COUNT(*) FROM reservations WHERE userId = ?', userId, (resolve, result) => resolve(result));
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM reservations WHERE userId = ?', userId, (resolve, result) => resolve(result[0]['COUNT(*)']));
 }
 export function getNumberOfInterestedCompaniesOfUser(userId) {
-    return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE userId = ?', userId, (resolve, result) => resolve(result));
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE userId = ?', userId, (resolve, result) => resolve(result[0]['COUNT(*)']));
+}
+export function getReservationItemsOfUser(userId) {
+    return createPromiseWithDBQuery('SELECT r.id, r.processState, c.name FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?', userId, (resolve, result) => resolve(result));
 }
 //# sourceMappingURL=companies.js.map

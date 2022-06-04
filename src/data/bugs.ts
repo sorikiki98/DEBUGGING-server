@@ -1,4 +1,4 @@
-import { Bug } from '../types/index.js';
+import { Bug, SurveyItem } from '../types/index.js';
 import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getBugs(): Promise<Bug[]> {
@@ -17,11 +17,22 @@ export function getBug(bugId: string): Promise<Bug> {
 	);
 }
 
-export function addSurveyResult(userId: number, bugId: string): Promise<number> {
+export function addSurveyResult(
+	userId: number,
+	bugId: string
+): Promise<number> {
 	const survey = { userId, bugId, surveyDate: new Date() };
 	return createPromiseWithDBQuery<number>(
 		'INSERT INTO surveys SET ?',
 		survey,
 		(resolve, result) => resolve(result['insertId'])
+	);
+}
+
+export function getSurveyItemsOfUser(userId: number): Promise<SurveyItem[]> {
+	return createPromiseWithDBQuery<SurveyItem[]>(
+		'SELECT s.surveyDate, s.bugId, b.name FROM surveys AS s INNER JOIN bugs AS b ON s.bugId = b.id WHERE s.userId = ?',
+		userId,
+		(resolve, result) => resolve(result)
 	);
 }

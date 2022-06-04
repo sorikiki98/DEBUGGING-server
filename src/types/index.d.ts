@@ -129,9 +129,9 @@ export type ReservationItem = {
 export type UserDetail = User & {
 	accumulatedNumOfUsages: number;
 	numOfInterestedCompanies: number;
-	surveyList: surveyItem[];
-	productList: productItem[];
-	reservationList: reservationItem[];
+	surveyList: SurveyItem[];
+	productList: ProductItem[];
+	reservationList: ReservationItem[];
 };
 
 export type UserLogin = {
@@ -158,7 +158,7 @@ export type CompanyQueryParamType =
 	| ReservationWithFK
 	| CompanyInterestFK;
 
-export type BugQueryParamType = undefined | string | Survey;
+export type BugQueryParamType = undefined | number | string | Survey;
 
 export type UserQueryParamType = number | string | UserRegistration;
 
@@ -179,11 +179,12 @@ export type CompanyPromiseReturnType =
 	| Company[]
 	| CompanyInterest[]
 	| ReservationDetail[]
+	| ReservationItem[]
 	| number
 	| boolean
 	| undefined;
 
-export type BugPromiseReturnType = number | Bug | Bug[];
+export type BugPromiseReturnType = number | Bug | Bug[] | SurveyItem[];
 
 export type UserPromiseReturnType = number | undefined | User;
 
@@ -191,6 +192,7 @@ export type ProductPromiseReturnType =
 	| Product
 	| Product[]
 	| ProductInterest[]
+	| ProductItem[]
 	| boolean
 	| number
 	| undefined;
