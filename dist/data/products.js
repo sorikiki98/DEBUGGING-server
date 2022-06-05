@@ -2,13 +2,10 @@ import createPromiseWithDBQuery from '../util/promise.js';
 export function getProducts() {
     return createPromiseWithDBQuery('SELECT * FROM products', undefined, (resolve, result) => resolve(result));
 }
-export function getProductInterestsByUserId(userId) {
-    return createPromiseWithDBQuery('SELECT * FROM productinterests WHERE userId = ?', userId, (resolve, result) => resolve(result));
-}
 export function getProduct(productId) {
     return createPromiseWithDBQuery('SELECT * FROM products WHERE id = ?', productId, (resolve, result) => resolve(result[0]));
 }
-export function findProductInterestById(userId, productId) {
+export function isProductInterested(userId, productId) {
     return createPromiseWithDBQuery('SELECT * FROM productinterests WHERE userId = ? AND productId = ?', [userId, productId], (resolve, result) => {
         if (!result[0])
             resolve(false);
@@ -24,5 +21,8 @@ export function removeProductInterest(userId, productId) {
 }
 export function getProductItemsOfUser(userId) {
     return createPromiseWithDBQuery('SELECT p.id, p.name FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?', userId, (resolve, result) => resolve(result));
+}
+export function getNumberOfInterestedUsersOfProduct(productId) {
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM productinterests WHERE productId = ?', productId, (resolve, result) => resolve(result[0]['COUNT(*)']));
 }
 //# sourceMappingURL=products.js.map

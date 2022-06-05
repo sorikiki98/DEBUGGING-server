@@ -4,7 +4,6 @@ import * as UserRepository from '../data/user.js';
 import {
 	User,
 	Company,
-	CompanyInterest,
 	ReservationForm,
 	ReservationDetail,
 } from '../types/index.js';
@@ -14,12 +13,13 @@ export async function getCompanies(
 	res: Response,
 	next: NextFunction
 ) {
-	const { getCompanies, getCompanyInterestsByUserId } = CompaniesRepository;
-	const companies = await getCompanies();
-	const companyInterests = await getCompanyInterestsByUserId(req.userId!);
+	const companies = await CompaniesRepository.getCompanies();
 
-	updateCompanyInterested(companies, companyInterests);
-	res.status(200).json(companies);
+	Promise.all(
+		companies.map(async (company) => {
+			return updateCompanyProperties(req.userId!, company);
+		})
+	).then((result) => res.status(200).json(result));
 }
 
 export async function reserve(req: Request, res: Response, next: NextFunction) {
@@ -58,13 +58,12 @@ export async function addCompanyInterest(
 	res: Response,
 	next: NextFunction
 ) {
-	if (await isCompanyInterested(req)) {
+	const userId = req.userId!;
+	const companyId = req.params.company_id;
+	if (await isCompanyInterested(userId, companyId)) {
 		return res.sendStatus(409);
 	}
-	await CompaniesRepository.addCompanyInterest(
-		req.userId!,
-		req.params.company_id
-	);
+	await CompaniesRepository.addCompanyInterest(userId, companyId);
 	res.sendStatus(201);
 }
 
@@ -73,34 +72,40 @@ export async function removeCompanyInterest(
 	res: Response,
 	next: NextFunction
 ) {
-	if (!(await isCompanyInterested(req))) {
+	const userId = req.userId!;
+	const companyId = req.params.company_id;
+	if (!(await isCompanyInterested(userId, companyId))) {
 		return res.sendStatus(404);
 	}
-	await CompaniesRepository.removeCompanyInterest(
-		req.userId!,
-		req.params.company_id
-	);
+	await CompaniesRepository.removeCompanyInterest(userId, companyId);
 	res.sendStatus(204);
 }
 
-async function isCompanyInterested(req: Request): Promise<boolean> {
-	return await CompaniesRepository.findCompanyInterestById(
-		req.userId!,
-		req.params.company_id
+async function updateCompanyProperties(userId: number, company: Company) {
+	await updateIsCompanyInterested(userId, company);
+	await updateNumOfInterestedUsers(company);
+	return company;
+}
+
+async function updateIsCompanyInterested(userId: number, company: Company) {
+	company.isCompanyInterested = await isCompanyInterested(
+		userId,
+		company.id.toString()
 	);
 }
 
-function updateCompanyInterested(
-	companies: Company[],
-	companyInterests: CompanyInterest[]
-) {
-	const interestedCompanyIds = companyInterests.map(
-		(companyInterest) => companyInterest.companyId
-	);
-	companies.forEach(
-		(company) =>
-			(company.isCompanyInterested = interestedCompanyIds.includes(company.id))
-	);
+async function updateNumOfInterestedUsers(company: Company) {
+	company.numOfInterestedUsers =
+		await CompaniesRepository.getNumberOfInterestedUsersOfCompany(
+			company.id.toString()
+		);
+}
+
+async function isCompanyInterested(
+	userId: number,
+	companyId: string
+): Promise<boolean> {
+	return CompaniesRepository.isCompanyInterested(userId, companyId);
 }
 
 function createReservationDetail(

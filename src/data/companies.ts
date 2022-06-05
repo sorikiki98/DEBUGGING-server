@@ -1,6 +1,5 @@
 import {
 	Company,
-	CompanyInterest,
 	ReservationDetail,
 	ReservationForm,
 	ReservationItem,
@@ -12,16 +11,6 @@ export function getCompanies(): Promise<Company[]> {
 		'SELECT * FROM companies',
 		undefined,
 		(resolve, result: Company[]) => resolve(result)
-	);
-}
-
-export function getCompanyInterestsByUserId(
-	userId: number
-): Promise<CompanyInterest[]> {
-	return createPromiseWithDBQuery<CompanyInterest[]>(
-		'SELECT * FROM companyinterests WHERE userId = ?',
-		userId,
-		(resolve, result: CompanyInterest[]) => resolve(result)
 	);
 }
 
@@ -58,7 +47,7 @@ export function findCompanyById(companyId: string): Promise<Company> {
 	);
 }
 
-export function findCompanyInterestById(
+export function isCompanyInterested(
 	userId: number,
 	companyId: string
 ): Promise<boolean> {
@@ -108,6 +97,14 @@ export function getNumberOfInterestedCompaniesOfUser(
 	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM companyinterests WHERE userId = ?',
 		userId,
+		(resolve, result) => resolve(result[0]['COUNT(*)'])
+	);
+}
+
+export function getNumberOfInterestedUsersOfCompany(companyId: string): Promise<number> {
+	return createPromiseWithDBQuery<number>(
+		'SELECT COUNT(*) FROM companyinterests WHERE companyId = ?',
+		companyId,
 		(resolve, result) => resolve(result[0]['COUNT(*)'])
 	);
 }

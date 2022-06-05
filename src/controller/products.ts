@@ -1,18 +1,18 @@
 import { Request, NextFunction, Response } from 'express';
 import * as ProductsRepository from '../data/products.js';
-import { Product, ProductInterest } from '../types/index.js';
+import { Product } from '../types/index.js';
 
 export async function getProducts(
 	req: Request,
 	res: Response,
 	next: NextFunction
 ) {
-	const { getProducts, getProductInterestsByUserId } = ProductsRepository;
-	const products = await getProducts();
-	const productInterests = await getProductInterestsByUserId(req.userId!);
-
-	updateProductInterested(products, productInterests);
-	res.status(200).json(products);
+	const products = await ProductsRepository.getProducts();
+	Promise.all(
+		products.map(async (product) => {
+			return updateProductProperties(req.userId!, product);
+		})
+	).then((result) => res.status(200).json(result));
 }
 
 export async function getProduct(
@@ -20,15 +20,15 @@ export async function getProduct(
 	res: Response,
 	next: NextFunction
 ) {
+	const userId = req.userId!;
 	const productId = req.params.product_id;
 	const product = await ProductsRepository.getProduct(productId);
 	if (product == null) {
 		return res.sendStatus(404);
 	}
-	const isInterested = await isProductInterested(req);
-	product.isProductInterested = isInterested;
-
-	res.status(200).json(product);
+	await updateProductProperties(userId, product).then((result) =>
+		res.status(200).json(result)
+	);
 }
 
 export async function addProductInterest(
@@ -36,13 +36,12 @@ export async function addProductInterest(
 	res: Response,
 	next: NextFunction
 ) {
-	if (await isProductInterested(req)) {
+	const userId = req.userId!;
+	const productId = req.params.product_id;
+	if (await isProductInterested(userId, productId)) {
 		return res.sendStatus(409);
 	}
-	await ProductsRepository.addProductInterest(
-		req.userId!,
-		req.params.product_id
-	);
+	await ProductsRepository.addProductInterest(userId, productId);
 	res.sendStatus(201);
 }
 
@@ -51,32 +50,42 @@ export async function removeCompanyInterest(
 	res: Response,
 	next: NextFunction
 ) {
-	if (!(await isProductInterested(req))) {
+	const userId = req.userId!;
+	const productId = req.params.product_id;
+	if (!(await isProductInterested(userId, productId))) {
 		return res.sendStatus(404);
 	}
-	await ProductsRepository.removeProductInterest(
-		req.userId!,
-		req.params.product_id
-	);
+	await ProductsRepository.removeProductInterest(userId, productId);
 	res.sendStatus(204);
 }
 
-async function isProductInterested(req: Request): Promise<boolean> {
-	return await ProductsRepository.findProductInterestById(
-		req.userId!,
-		req.params.product_id
+async function updateProductProperties(
+	userId: number,
+	product: Product
+): Promise<Product> {
+	await updateIsProductInterested(userId, product);
+	await updateNumOfInterestedUsers(product);
+	return product;
+}
+
+async function updateIsProductInterested(userId: number, product: Product) {
+	product.isProductInterested = await isProductInterested(
+		userId,
+		product.id.toString()
 	);
 }
 
-function updateProductInterested(
-	products: Product[],
-	productInterests: ProductInterest[]
-) {
-	const interestedProductIds = productInterests.map(
-		(productInterest) => productInterest.productId
-	);
-	products.forEach(
-		(product) =>
-			(product.isProductInterested = interestedProductIds.includes(product.id))
-	);
+async function updateNumOfInterestedUsers(product: Product) {
+	const numOfUsers =
+		await ProductsRepository.getNumberOfInterestedUsersOfProduct(
+			product.id.toString()
+		);
+	product.numOfInterestedUsers = numOfUsers;
+}
+
+async function isProductInterested(
+	userId: number,
+	productId: string
+): Promise<boolean> {
+	return await ProductsRepository.isProductInterested(userId, productId);
 }

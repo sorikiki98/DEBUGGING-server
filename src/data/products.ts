@@ -9,16 +9,6 @@ export function getProducts(): Promise<Product[]> {
 	);
 }
 
-export function getProductInterestsByUserId(
-	userId: number
-): Promise<ProductInterest[]> {
-	return createPromiseWithDBQuery<ProductInterest[]>(
-		'SELECT * FROM productinterests WHERE userId = ?',
-		userId,
-		(resolve, result: ProductInterest[]) => resolve(result)
-	);
-}
-
 export function getProduct(productId: string): Promise<Product> {
 	return createPromiseWithDBQuery<Product>(
 		'SELECT * FROM products WHERE id = ?',
@@ -27,7 +17,7 @@ export function getProduct(productId: string): Promise<Product> {
 	);
 }
 
-export function findProductInterestById(
+export function isProductInterested(
 	userId: number,
 	productId: string
 ): Promise<boolean> {
@@ -68,5 +58,13 @@ export function getProductItemsOfUser(userId: number): Promise<ProductItem[]> {
 		'SELECT p.id, p.name FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
+	);
+}
+
+export function getNumberOfInterestedUsersOfProduct(productId: string): Promise<number> {
+	return createPromiseWithDBQuery<number>(
+		'SELECT COUNT(*) FROM productinterests WHERE productId = ?',
+		productId,
+		(resolve, result) => resolve(result[0]['COUNT(*)'])
 	);
 }

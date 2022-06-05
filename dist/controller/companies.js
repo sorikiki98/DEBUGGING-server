@@ -11,11 +11,10 @@ import * as CompaniesRepository from '../data/companies.js';
 import * as UserRepository from '../data/user.js';
 export function getCompanies(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { getCompanies, getCompanyInterestsByUserId } = CompaniesRepository;
-        const companies = yield getCompanies();
-        const companyInterests = yield getCompanyInterestsByUserId(req.userId);
-        updateCompanyInterested(companies, companyInterests);
-        res.status(200).json(companies);
+        const companies = yield CompaniesRepository.getCompanies();
+        Promise.all(companies.map((company) => __awaiter(this, void 0, void 0, function* () {
+            return updateCompanyProperties(req.userId, company);
+        }))).then((result) => res.status(200).json(result));
     });
 }
 export function reserve(req, res, next) {
@@ -39,30 +38,48 @@ export function checkReservation(req, res, next) {
 }
 export function addCompanyInterest(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (yield isCompanyInterested(req)) {
+        const userId = req.userId;
+        const companyId = req.params.company_id;
+        if (yield isCompanyInterested(userId, companyId)) {
             return res.sendStatus(409);
         }
-        yield CompaniesRepository.addCompanyInterest(req.userId, req.params.company_id);
+        yield CompaniesRepository.addCompanyInterest(userId, companyId);
         res.sendStatus(201);
     });
 }
 export function removeCompanyInterest(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!(yield isCompanyInterested(req))) {
+        const userId = req.userId;
+        const companyId = req.params.company_id;
+        if (!(yield isCompanyInterested(userId, companyId))) {
             return res.sendStatus(404);
         }
-        yield CompaniesRepository.removeCompanyInterest(req.userId, req.params.company_id);
+        yield CompaniesRepository.removeCompanyInterest(userId, companyId);
         res.sendStatus(204);
     });
 }
-function isCompanyInterested(req) {
+function updateCompanyProperties(userId, company) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield CompaniesRepository.findCompanyInterestById(req.userId, req.params.company_id);
+        yield updateIsCompanyInterested(userId, company);
+        yield updateNumOfInterestedUsers(company);
+        return company;
     });
 }
-function updateCompanyInterested(companies, companyInterests) {
-    const interestedCompanyIds = companyInterests.map((companyInterest) => companyInterest.companyId);
-    companies.forEach((company) => (company.isCompanyInterested = interestedCompanyIds.includes(company.id)));
+function updateIsCompanyInterested(userId, company) {
+    return __awaiter(this, void 0, void 0, function* () {
+        company.isCompanyInterested = yield isCompanyInterested(userId, company.id.toString());
+    });
+}
+function updateNumOfInterestedUsers(company) {
+    return __awaiter(this, void 0, void 0, function* () {
+        company.numOfInterestedUsers =
+            yield CompaniesRepository.getNumberOfInterestedUsersOfCompany(company.id.toString());
+    });
+}
+function isCompanyInterested(userId, companyId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return CompaniesRepository.isCompanyInterested(userId, companyId);
+    });
 }
 function createReservationDetail(reservation, user, company) {
     const reservationInfo = Object.assign(Object.assign({}, reservation), { reservationDateTime: new Date() });

@@ -2,9 +2,6 @@ import createPromiseWithDBQuery from '../util/promise.js';
 export function getCompanies() {
     return createPromiseWithDBQuery('SELECT * FROM companies', undefined, (resolve, result) => resolve(result));
 }
-export function getCompanyInterestsByUserId(userId) {
-    return createPromiseWithDBQuery('SELECT * FROM companyinterests WHERE userId = ?', userId, (resolve, result) => resolve(result));
-}
 export function reserveCompany(userId, companyId, reservation) {
     const reservationWithFK = Object.assign({ userId, companyId }, reservation);
     return createPromiseWithDBQuery('INSERT INTO reservations SET ?', reservationWithFK, (resolve, result) => {
@@ -17,7 +14,7 @@ export function getReservationDetail(reservationId) {
 export function findCompanyById(companyId) {
     return createPromiseWithDBQuery('SELECT * FROM companies WHERE id = ?', companyId, (resolve, result) => resolve(result[0]));
 }
-export function findCompanyInterestById(userId, companyId) {
+export function isCompanyInterested(userId, companyId) {
     return createPromiseWithDBQuery('SELECT * FROM companyinterests WHERE userId = ? AND companyId = ?', [userId, companyId], (resolve, result) => {
         if (!result[0])
             resolve(false);
@@ -36,6 +33,9 @@ export function getNumberOfReservationsOfUser(userId) {
 }
 export function getNumberOfInterestedCompaniesOfUser(userId) {
     return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE userId = ?', userId, (resolve, result) => resolve(result[0]['COUNT(*)']));
+}
+export function getNumberOfInterestedUsersOfCompany(companyId) {
+    return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE companyId = ?', companyId, (resolve, result) => resolve(result[0]['COUNT(*)']));
 }
 export function getReservationItemsOfUser(userId) {
     return createPromiseWithDBQuery('SELECT r.id, r.processState, c.name FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?', userId, (resolve, result) => resolve(result));

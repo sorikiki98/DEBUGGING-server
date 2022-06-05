@@ -35,6 +35,7 @@ export type Company = {
 	availableCounselTime: string;
 	thumbnail?: string;
 	isCompanyInterested?: boolean = false;
+	numOfInterestedUsers?: number = 0;
 };
 
 export type CompanyInterestFK = [number, string];
@@ -93,6 +94,7 @@ export type Product = {
 	description: string;
 	thumbnail?: string;
 	isProductInterested?: boolean = false;
+	numOfInterestedUsers?: number = 0;
 };
 
 export type ProductInterestFK = [number, string];
