@@ -55,7 +55,7 @@ export function removeProductInterest(
 
 export function getProductItemsOfUser(userId: number): Promise<ProductItem[]> {
 	return createPromiseWithDBQuery<ProductItem[]>(
-		'SELECT p.id, p.name FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
+		'SELECT pi.id AS productInterestId, p.id AS productId, pi.userId, p.name AS productName FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);

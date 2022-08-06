@@ -31,7 +31,7 @@ export function addSurveyResult(
 
 export function getSurveyItemsOfUser(userId: number): Promise<SurveyItem[]> {
 	return createPromiseWithDBQuery<SurveyItem[]>(
-		'SELECT s.surveyDate, s.bugId, b.name FROM surveys AS s INNER JOIN bugs AS b ON s.bugId = b.id WHERE s.userId = ?',
+		'SELECT s.id AS surveyId, s.userId, s.surveyDate, s.bugId, b.name AS bugName FROM surveys AS s INNER JOIN bugs AS b ON s.bugId = b.id WHERE s.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);

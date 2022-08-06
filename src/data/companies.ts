@@ -50,13 +50,13 @@ export function findCompanyById(companyId: string): Promise<Company> {
 export function isCompanyInterested(
 	userId: number,
 	companyId: string
-): Promise<boolean> {
-	return createPromiseWithDBQuery<boolean>(
+): Promise<number> {
+	return createPromiseWithDBQuery<number>(
 		'SELECT * FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
 		(resolve, result) => {
-			if (!result[0]) resolve(false);
-			else resolve(true);
+			if (!result[0]) resolve(0);
+			else resolve(1);
 		}
 	);
 }
@@ -113,7 +113,7 @@ export function getReservationItemsOfUser(
 	userId: number
 ): Promise<ReservationItem[]> {
 	return createPromiseWithDBQuery<ReservationItem[]>(
-		'SELECT r.id, r.processState, c.name FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?',
+		'SELECT r.id AS reservationId, r.userId, r.processState, c.name AS companyName FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);

@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserLogin'
+                $ref: '#/components/schemas/UserAuthenticationSuccess'
         '401':
           description: Unauthorized
           content:
@@ -476,6 +476,12 @@ components:
           items:
             type: object
             properties:
+              surveyId:
+                type: integer
+                format: int64
+              userId:
+                type: integer
+                format: int64
               bugId:
                 type: integer
                 format: int64
@@ -485,6 +491,9 @@ components:
                 type: string
                 format: date
             required:
+              - surveyId
+              - userId
+              - bugId
               - surveyDate
               - bugName
         productList:
@@ -492,13 +501,21 @@ components:
           items:
             type: object
             properties:
+              productInterestId:
+                type: integer
+                format: int64
               productId:
+                type: integer
+                format: int64
+              userId:
                 type: integer
                 format: int64
               productName:
                 type: string
             required:
-              - productId
+              - productInterestId
+                productId
+                userId
                 productName
         reservationList:
           type: array
@@ -506,6 +523,9 @@ components:
             type: object
             properties:
               reservationId:
+                type: integer
+                format: int64
+              userId:
                 type: integer
                 format: int64
               companyName:
@@ -516,6 +536,7 @@ components:
                 default: 1
             required:
               - reservationId
+              - userId
               - companyName
               - processState
       required:
@@ -543,19 +564,28 @@ components:
         accumulatedNumOfUsages: 3
         numOfInterestedCompanies: 4
         surveyList:
-          - bugId: 8
+          - surveyId: 2
+            userId: 1
+            bugId: 8
             bugName: 모기
             surveyDate: '2022-05-01'
-          - bugId: 1
+          - surveyId: 3
+            userId: 2
+            bugId: 1
             bugName: 바퀴벌레
             surveyDate: '2022-05-01'
         productList:
-          - productId: 1
+          - productInterestId: 1
+            productId: 2
+            userId: 1
             productName: 홈매트 제로 리퀴드
-          - productId: 2
+          - productInterestId: 2
+            productId: 4
+            userId: 2
             productName: 차니팡 모기장
         reservationList:
           - reservationId: 2
+            userId: 10
             companyName: 해충마스터
             processState: 1
     CompanyInformation:
@@ -641,7 +671,7 @@ components:
         - wantedDate
         - wantedTime
         - hasBugBeenShown
-        - reserveDateTime
+        - reservationDateTime
       example:
         bugName: 바퀴벌레
         firstFoundDate: '2022-05-04'
@@ -650,6 +680,7 @@ components:
         wantedTime: 오후 4시~ 오후 6시
         hasBugBeenShown: false
         reserveDateTime: '2022-05-10'
+        extraMessage: 추가 요청 사항
     ReservationDetail:
       type: object
       properties:
@@ -668,8 +699,9 @@ components:
         wantedTime:
           type: string
         hasBugBeenShown:
-          type: boolean
-        reserveDateTime:
+          type: integer
+          format: int64
+        reservationDateTime:
           type: string
           format: date-time
         extraMessage:
@@ -755,8 +787,8 @@ components:
         firstFoundPlace: 화장실 변기 옆
         wantedDate: 2022-05-12~2022-05-19
         wantedTime: 오후 4시~ 오후 6시
-        hasBugBeenShown: false
-        reserveDateTime: '2022-05-10'
+        hasBugBeenShown: 0
+        reservationDateTime: '2022-05-10'
         userId: 1
         userName: 김다솔
         userContactNumbers: 010-1111-2222

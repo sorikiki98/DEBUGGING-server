@@ -34,7 +34,7 @@ export type Company = {
 	availableArea: string;
 	availableCounselTime: string;
 	thumbnail?: string;
-	isCompanyInterested?: boolean = false;
+	isCompanyInterested?: number = 0;
 	numOfInterestedUsers?: number = 0;
 };
 
@@ -44,7 +44,7 @@ export type ReservationForm = {
 	bugName: string;
 	firstFoundDate: Date;
 	firstFoundPlace: string;
-	wantedDate: Date;
+	wantedDate: string;
 	wantedTime: string;
 	hasBugBeenShown: boolean;
 	reservationDateTime?: Date;
@@ -118,7 +118,7 @@ export type UserRegistration = {
 
 export type User = { id: number } & UserRegistration;
 
-export type SurveyItem = { bugId: number; bugName: string; surveyDate: Date };
+export type SurveyItem = { surveyId: number, bugId: number; bugName: string; surveyDate: Date };
 
 export type ProductItem = { productId: number; productName: string };
 

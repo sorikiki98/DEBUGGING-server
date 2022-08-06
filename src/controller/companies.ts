@@ -104,7 +104,7 @@ async function updateNumOfInterestedUsers(company: Company) {
 async function isCompanyInterested(
 	userId: number,
 	companyId: string
-): Promise<boolean> {
+): Promise<number> {
 	return CompaniesRepository.isCompanyInterested(userId, companyId);
 }
 
