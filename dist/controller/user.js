@@ -19,7 +19,7 @@ export function createUser(req, res, next) {
         const { userName, password } = req.body;
         const user = yield UserRepository.findUserByName(userName);
         if (user) {
-            return res.sendStatus(209);
+            return res.sendStatus(409);
         }
         const hashed = yield bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
         const userId = yield UserRepository.createUser(Object.assign(Object.assign({}, req.body), { password: hashed }));
@@ -64,10 +64,14 @@ export function getMyPage(req, res, next) {
         const surveyList = yield getSurveyItemsOfUser(req.userId);
         const productList = yield getProductItemsOfUser(req.userId);
         const reservationList = yield getReservationItemsOfUser(req.userId);
+        let updatedProductList;
+        yield Promise.all(productList.map((product) => __awaiter(this, void 0, void 0, function* () {
+            return updateNumOfInterestedUsers(product);
+        }))).then((result) => updatedProductList = result);
         const userDetail = Object.assign(Object.assign({}, user), { accumulatedNumOfUsages,
             numberOfInterestedCompanies,
             surveyList,
-            productList,
+            updatedProductList,
             reservationList });
         res.status(200).json(userDetail);
     });
@@ -75,6 +79,13 @@ export function getMyPage(req, res, next) {
 function createJWT(userId) {
     return jwt.sign({ userId }, config.jwt.privateKey, {
         expiresIn: config.jwt.expirSecs,
+    });
+}
+function updateNumOfInterestedUsers(product) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const numOfUsers = yield ProductRepository.getNumberOfInterestedUsersOfProduct(product.productId.toString());
+        product.numOfInterestedUsers = numOfUsers;
+        return product;
     });
 }
 //# sourceMappingURL=user.js.map

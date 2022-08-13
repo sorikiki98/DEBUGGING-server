@@ -5,8 +5,9 @@ import * as UserRepository from '../data/user.js';
 import * as BugsRepository from '../data/bugs.js';
 import * as CompanyRepository from '../data/companies.js';
 import * as ProductRepository from '../data/products.js';
+import * as ProductController from '../controller/products.js';
 import { config } from '../config.js';
-import { UserRegistration, UserLogin } from '../types/index.js';
+import { UserRegistration, UserLogin, ProductItem } from '../types/index.js';
 
 export async function createUser(
 	req: Request,
@@ -16,7 +17,7 @@ export async function createUser(
 	const { userName, password } = req.body as UserRegistration;
 	const user = await UserRepository.findUserByName(userName);
 	if (user) {
-		return res.sendStatus(209);
+		return res.sendStatus(409);
 	}
 
 	const hashed = await bcrypt.hash(
@@ -81,12 +82,19 @@ export async function getMyPage(
 	const productList = await getProductItemsOfUser(req.userId!);
 	const reservationList = await getReservationItemsOfUser(req.userId!);
 
+	let updatedProductList;
+	await Promise.all(
+		productList.map(async (product) => {
+			return updateNumOfInterestedUsers(product);
+		})
+	).then((result) => updatedProductList = result);
+
 	const userDetail = {
 		...user,
 		accumulatedNumOfUsages,
 		numberOfInterestedCompanies,
 		surveyList,
-		productList,
+		updatedProductList,
 		reservationList,
 	};
 
@@ -97,4 +105,13 @@ function createJWT(userId: number): string {
 	return jwt.sign({ userId }, config.jwt.privateKey, {
 		expiresIn: config.jwt.expirSecs,
 	});
+}
+
+async function updateNumOfInterestedUsers(product: ProductItem): Promise<ProductItem> {
+	const numOfUsers =
+		await ProductRepository.getNumberOfInterestedUsersOfProduct(
+			product.productId.toString()
+		);
+	product.numOfInterestedUsers = numOfUsers;
+	return product;
 }

@@ -86,6 +86,6 @@ async function updateNumOfInterestedUsers(product: Product) {
 async function isProductInterested(
 	userId: number,
 	productId: string
-): Promise<boolean> {
+): Promise<number> {
 	return await ProductsRepository.isProductInterested(userId, productId);
 }

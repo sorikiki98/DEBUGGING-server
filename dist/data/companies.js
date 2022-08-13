@@ -38,6 +38,6 @@ export function getNumberOfInterestedUsersOfCompany(companyId) {
     return createPromiseWithDBQuery('SELECT COUNT(*) FROM companyinterests WHERE companyId = ?', companyId, (resolve, result) => resolve(result[0]['COUNT(*)']));
 }
 export function getReservationItemsOfUser(userId) {
-    return createPromiseWithDBQuery('SELECT r.id AS reservationId, r.userId, r.processState, c.name AS companyName FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?', userId, (resolve, result) => resolve(result));
+    return createPromiseWithDBQuery('SELECT r.id AS reservationId, r.userId, r.processState, r.bugName, c.name AS companyName, r.reservationDateTime, r.visitDateTime FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?', userId, (resolve, result) => resolve(result));
 }
 //# sourceMappingURL=companies.js.map

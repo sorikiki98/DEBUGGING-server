@@ -113,7 +113,7 @@ export function getReservationItemsOfUser(
 	userId: number
 ): Promise<ReservationItem[]> {
 	return createPromiseWithDBQuery<ReservationItem[]>(
-		'SELECT r.id AS reservationId, r.userId, r.processState, c.name AS companyName FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?',
+		'SELECT r.id AS reservationId, r.userId, r.processState, r.bugName, c.name AS companyName, r.reservationDateTime, r.visitDateTime FROM reservations AS r INNER JOIN companies AS c ON r.companyId = c.id WHERE r.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);

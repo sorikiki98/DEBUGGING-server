@@ -512,11 +512,18 @@ components:
                 format: int64
               productName:
                 type: string
+              thumbnail:
+                type: string
+              numOfInterestedUsers:
+                type: integer
+                format: int64
             required:
               - productInterestId
                 productId
                 userId
                 productName
+                thumbnail
+                numOfInterestedUsers
         reservationList:
           type: array
           items:
@@ -530,14 +537,21 @@ components:
                 format: int64
               companyName:
                 type: string
+              bugName:
+                type: string
               processState:
                 type: integer
                 nullable: true
                 default: 1
+              reservationDateTime:
+                type: string
+              visitDateTime:
+                type: string
             required:
               - reservationId
               - userId
               - companyName
+              - bugName
               - processState
       required:
         - id
@@ -579,15 +593,20 @@ components:
             productId: 2
             userId: 1
             productName: 홈매트 제로 리퀴드
+            numOfInterestedUsers: 3
           - productInterestId: 2
             productId: 4
             userId: 2
             productName: 차니팡 모기장
+            numOfInterestedUsers: 1
         reservationList:
           - reservationId: 2
             userId: 10
             companyName: 해충마스터
+            bugName: 모기
             processState: 1
+            reservationDateTime: 2022년 08월 10일
+            visitDateTime: 2022년 08월 12일
     CompanyInformation:
       type: object
       properties:
@@ -866,7 +885,8 @@ components:
           format: url
           nullable: true
         isProductInterested:
-          type: boolean
+          type: integer
+          format: int64
           nullable: true
           default: false
       required:
@@ -882,7 +902,7 @@ components:
         shortIntro: 걱정제로 안심 보호막으로 마음은 편안하게, 효과는 확실하게
         description: 쉽고 간편한 온/오프 스위치 타입 + NEW 컴팩트한 디자인 + 편안한 LED조명 + 효과적인 살충력까지!
         thumbnail: https://cdn.011st.com/11dims/resize/600x600/quality/75/11src/pd/21/2/1/7/9/3/4/pyNlM/3534217934_B.jpg
-        isProductInterested: true
+        isProductInterested: 1
     ProductsList:
       type: array
       items:

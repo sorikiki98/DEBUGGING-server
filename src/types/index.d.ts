@@ -73,7 +73,7 @@ export type ReservationDetail = ReservationForm & {
 	availableArea: string;
 	availableCounselTime: string;
 	thumbnail?: string;
-	processState?: number = 1;
+	processState?: number = 0;
 	engineerName?: string;
 	engineerContactNumbers?: string;
 	expectedEstimate?: string;
@@ -93,7 +93,7 @@ export type Product = {
 	shortIntro: string;
 	description: string;
 	thumbnail?: string;
-	isProductInterested?: boolean = false;
+	isProductInterested?: int = 0;
 	numOfInterestedUsers?: number = 0;
 };
 
@@ -118,14 +118,29 @@ export type UserRegistration = {
 
 export type User = { id: number } & UserRegistration;
 
-export type SurveyItem = { surveyId: number, bugId: number; bugName: string; surveyDate: Date };
+export type SurveyItem = { 
+	surveyId: number;
+	bugId: number; 
+	bugName: string; 
+	surveyDate: Date };
 
-export type ProductItem = { productId: number; productName: string };
+export type ProductItem = { 
+	productInterestId: number; 
+	productId: number; 
+	userId: number; 
+	productName: string; 
+	thumbnail: string; 
+	numOfInterestedUsers: number; 
+};
 
 export type ReservationItem = {
 	reservationId: number;
+	userId: number;
 	companyName: string;
+	bugName: string;
 	processState: number;
+	reservationDateTime: string;
+	visitDateTime: string;
 };
 
 export type UserDetail = User & {

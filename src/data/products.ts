@@ -20,13 +20,13 @@ export function getProduct(productId: string): Promise<Product> {
 export function isProductInterested(
 	userId: number,
 	productId: string
-): Promise<boolean> {
-	return createPromiseWithDBQuery<boolean>(
+): Promise<number> {
+	return createPromiseWithDBQuery<number>(
 		'SELECT * FROM productinterests WHERE userId = ? AND productId = ?',
 		[userId, productId],
 		(resolve, result) => {
-			if (!result[0]) resolve(false);
-			else resolve(true);
+			if (!result[0]) resolve(0);
+			else resolve(1);
 		}
 	);
 }
@@ -55,7 +55,7 @@ export function removeProductInterest(
 
 export function getProductItemsOfUser(userId: number): Promise<ProductItem[]> {
 	return createPromiseWithDBQuery<ProductItem[]>(
-		'SELECT pi.id AS productInterestId, p.id AS productId, pi.userId, p.name AS productName FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
+		'SELECT pi.id AS productInterestId, p.id AS productId, pi.userId, p.name AS productName, p.thumbnail FROM productinterests AS pi INNER JOIN products AS p ON pi.productId = p.id WHERE pi.userId = ?',
 		userId,
 		(resolve, result) => resolve(result)
 	);
