@@ -4,11 +4,11 @@ import yamljs from 'yamljs';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import 'express-async-errors';
-import BugsRouter from './routes/bugs.js';
-import UserRouter from './routes/user.js';
-import CompaniesRouter from './routes/companies.js';
-import ProductsRouter from './routes/products.js';
-import { config } from './config.js';
+import BugsRouter from './routes/bugs';
+import UserRouter from './routes/user';
+import CompaniesRouter from './routes/companies';
+import ProductsRouter from './routes/products';
+import { config } from './config';
 
 const app = express();
 

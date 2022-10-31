@@ -1,5 +1,5 @@
-import { pool } from '../db/database.js';
-import { ResolveCallback, QueryParamType, PromiseReturnType} from '../types/index.js';
+import { pool } from '../db/database';
+import { ResolveCallback, QueryParamType, PromiseReturnType} from '../types/index';
 
 export default function createPromiseWithDBQuery<T = PromiseReturnType>(
 	query: string,

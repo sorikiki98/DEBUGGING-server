@@ -1,5 +1,5 @@
-import { Bug, SurveyItem } from '../types/index.js';
-import createPromiseWithDBQuery from '../util/promise.js';
+import { Bug, SurveyItem } from '../types/index';
+import createPromiseWithDBQuery from '../util/promise';
 
 export function getBugs(): Promise<Bug[]> {
 	return createPromiseWithDBQuery<Bug[]>(

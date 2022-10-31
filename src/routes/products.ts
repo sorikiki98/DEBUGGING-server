@@ -1,6 +1,6 @@
 import express from 'express';
-import * as ProductsController from '../controller/products.js';
-import { isAuth } from '../middleware/auth.js';
+import * as ProductsController from '../controller/products';
+import { isAuth } from '../middleware/auth';
 
 const productsRouter = express.Router();
 

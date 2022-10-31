@@ -116,7 +116,7 @@ export type UserRegistration = {
 	numOfRooms?: number;
 };
 
-export type User = { id: number } & UserRegistration;
+export type User = { id: number } & UserRegistration | undefined;
 
 export type SurveyItem = { 
 	surveyId: number;

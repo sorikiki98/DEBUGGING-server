@@ -1,5 +1,5 @@
-import { Product, ProductInterest, ProductItem } from '../types/index.js';
-import createPromiseWithDBQuery from '../util/promise.js';
+import { Product, ProductInterest, ProductItem } from '../types/index';
+import createPromiseWithDBQuery from '../util/promise';
 
 export function getProducts(): Promise<Product[]> {
 	return createPromiseWithDBQuery<Product[]>(

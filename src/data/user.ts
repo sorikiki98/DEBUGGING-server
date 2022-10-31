@@ -1,5 +1,5 @@
-import { UserRegistration, User } from '../types/index.js';
-import createPromiseWithDBQuery from '../util/promise.js';
+import { UserRegistration, User } from '../types/index';
+import createPromiseWithDBQuery from '../util/promise';
 
 export function createUser(user: UserRegistration): Promise<number> {
 	return createPromiseWithDBQuery<number>(

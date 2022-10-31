@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from 'express';
-import * as BugsRepository from '../data/bugs.js';
-import { Bug } from '../types/index.js';
+import * as BugsRepository from '../data/bugs';
+import { Bug } from '../types/index';
 
 export async function getBugs(req: Request, res: Response, next: NextFunction) {
 	const bugs = (await BugsRepository.getBugs()) as Bug[];

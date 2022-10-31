@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-function require(key: string, defaultValue?: any) {
+function demand(key: string, defaultValue?: any) {
 	const value = process.env[key] || defaultValue;
 	if (!value) {
 		throw new Error(`${key} is unvalid...`);
@@ -12,20 +12,20 @@ function require(key: string, defaultValue?: any) {
 
 export const config = {
 	db: {
-		host: require('DB_HOST'),
-		user: require('DB_USER'),
-		password: require('DB_PASSWORD'),
-		database: require('DB_DATABASE'),
-		port: require('DB_PORT'),
+		host: demand('DB_HOST'),
+		user: demand('DB_USER'),
+		password: demand('DB_PASSWORD'),
+		database: demand('DB_DATABASE'),
+		port: demand('DB_PORT'),
 	},
     host: {
-        port: require('HOST_PORT', 8080),
+        port: demand('HOST_PORT', 8080),
     },
     jwt: {
-        expirSecs: require('JWT_EXPIRATION_MILLISEC'),
-        privateKey: require('JWT_PRIVATE_KEY'),
+        expirSecs: demand('JWT_EXPIRATION_MILLISEC'),
+        privateKey: demand('JWT_PRIVATE_KEY'),
     },
     bcrypt: {
-        saltsRound: require('BCRYPT_SALTS_ROUND')
+        saltsRound: demand('BCRYPT_SALTS_ROUND')
     }
 };

@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as UserRepository from '../data/user.js';
-import * as BugsRepository from '../data/bugs.js';
-import * as CompanyRepository from '../data/companies.js';
-import * as ProductRepository from '../data/products.js';
-import * as ProductController from '../controller/products.js';
-import { config } from '../config.js';
-import { UserRegistration, UserLogin, ProductItem } from '../types/index.js';
+import * as UserRepository from '../data/user';
+import * as BugsRepository from '../data/bugs';
+import * as CompanyRepository from '../data/companies';
+import * as ProductRepository from '../data/products';
+import * as ProductController from '../controller/products';
+import { config } from '../config';
+import { UserRegistration, UserLogin, ProductItem } from '../types/index';
 
 export async function createUser(
 	req: Request,
