@@ -8,11 +8,12 @@ export async function getProducts(
 	next: NextFunction
 ) {
 	const products = await ProductsRepository.getProducts();
-	Promise.all(
+	const result = await Promise.all(
 		products.map(async (product) => {
 			return updateProductProperties(req.userId!, product);
 		})
-	).then((result) => res.status(200).json(result));
+	);
+	return res.status(200).json(result);
 }
 
 export async function getProduct(
@@ -41,11 +42,14 @@ export async function addProductInterest(
 	if (await isProductInterested(userId, productId)) {
 		return res.sendStatus(409);
 	}
-	await ProductsRepository.addProductInterest(userId, productId);
-	res.sendStatus(201);
+	const insertId = await ProductsRepository.addProductInterest(
+		userId,
+		productId
+	);
+	res.status(201).json({ insertId });
 }
 
-export async function removeCompanyInterest(
+export async function removeProductInterest(
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -69,18 +73,18 @@ async function updateProductProperties(
 }
 
 async function updateIsProductInterested(userId: number, product: Product) {
-	product.isProductInterested = await isProductInterested(
+	product!.isProductInterested = await isProductInterested(
 		userId,
-		product.id.toString()
+		product!.id.toString()
 	);
 }
 
 async function updateNumOfInterestedUsers(product: Product) {
 	const numOfUsers =
 		await ProductsRepository.getNumberOfInterestedUsersOfProduct(
-			product.id.toString()
+			product!.id.toString()
 		);
-	product.numOfInterestedUsers = numOfUsers;
+	product!.numOfInterestedUsers = numOfUsers;
 }
 
 async function isProductInterested(

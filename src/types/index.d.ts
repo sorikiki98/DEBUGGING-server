@@ -16,7 +16,7 @@ export type Bug = {
 	habitat: string;
 	color: string;
 	surveyResult: string;
-};
+} | undefined;
 
 export type Survey = {
 	userId: number;
@@ -36,18 +36,18 @@ export type Company = {
 	thumbnail?: string;
 	isCompanyInterested?: number = 0;
 	numOfInterestedUsers?: number = 0;
-};
+} | undefined;
 
 export type CompanyInterestFK = [number, string];
 
 export type ReservationForm = {
 	bugName: string;
-	firstFoundDate: Date;
+	firstFoundDate: string;
 	firstFoundPlace: string;
 	wantedDate: string;
 	wantedTime: string;
 	hasBugBeenShown: boolean;
-	reservationDateTime?: Date;
+	reservationDateTime?: string;
 	extraMessage?: string;
 };
 
@@ -77,8 +77,8 @@ export type ReservationDetail = ReservationForm & {
 	engineerName?: string;
 	engineerContactNumbers?: string;
 	expectedEstimate?: string;
-	visitDateTime?: Date;
-};
+	visitDateTime?: string;
+} | undefined;
 
 export type CompanyInterest = {
 	id: number;
@@ -95,7 +95,7 @@ export type Product = {
 	thumbnail?: string;
 	isProductInterested?: int = 0;
 	numOfInterestedUsers?: number = 0;
-};
+} | undefined;
 
 export type ProductInterestFK = [number, string];
 
@@ -116,21 +116,22 @@ export type UserRegistration = {
 	numOfRooms?: number;
 };
 
-export type User = { id: number } & UserRegistration | undefined;
+export type User = ({ id: number } & UserRegistration) | undefined;
 
-export type SurveyItem = { 
+export type SurveyItem = {
 	surveyId: number;
-	bugId: number; 
-	bugName: string; 
-	surveyDate: Date };
+	bugId: number;
+	bugName: string;
+	surveyDate: string;
+};
 
-export type ProductItem = { 
-	productInterestId: number; 
-	productId: number; 
-	userId: number; 
-	productName: string; 
-	thumbnail: string; 
-	numOfInterestedUsers: number; 
+export type ProductItem = {
+	productInterestId: number;
+	productId: number;
+	userId: number;
+	productName: string;
+	thumbnail: string;
+	numOfInterestedUsers: number;
 };
 
 export type ReservationItem = {

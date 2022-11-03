@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as UserRepository from '../data/user.js';
-import * as BugsRepository from '../data/bugs.js';
-import * as CompanyRepository from '../data/companies.js';
-import * as ProductRepository from '../data/products.js';
-import { config } from '../config.js';
+import * as UserRepository from '../data/user';
+import * as BugsRepository from '../data/bugs';
+import * as CompanyRepository from '../data/companies';
+import * as ProductRepository from '../data/products';
+import { config } from '../config';
 export function createUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userName, password } = req.body;

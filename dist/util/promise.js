@@ -1,4 +1,4 @@
-import { pool } from '../db/database.js';
+import { pool } from '../db/database';
 export default function createPromiseWithDBQuery(query, params, callback) {
     return new Promise((resolve, reject) => {
         pool.query(query, params, (error, result) => {

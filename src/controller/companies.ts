@@ -15,11 +15,13 @@ export async function getCompanies(
 ) {
 	const companies = await CompaniesRepository.getCompanies();
 
-	Promise.all(
+	const result = await Promise.all(
 		companies.map(async (company) => {
 			return updateCompanyProperties(req.userId!, company);
 		})
-	).then((result) => res.status(200).json(result));
+	);
+
+	res.status(200).json(result);
 }
 
 export async function reserve(req: Request, res: Response, next: NextFunction) {
@@ -30,7 +32,7 @@ export async function reserve(req: Request, res: Response, next: NextFunction) {
 		reservation
 	);
 
-	res.status(201).json(reservationId);
+	res.status(201).json({ reservationId });
 }
 
 export async function checkReservation(
@@ -42,15 +44,25 @@ export async function checkReservation(
 		req.params.reservation_id
 	);
 	if (reservation == null) {
-		return res.sendStatus(404);
+		return res.status(404).json({ message: 'A reservation id is invalid.' });
 	}
 	const user = await UserRepository.findUserById(req.userId!);
 	const company = await CompaniesRepository.findCompanyById(
 		reservation.companyId.toString()
 	);
-	const reservationDetail = createReservationDetail(reservation, user, company);
 
-	res.status(200).json(reservationDetail);
+	if (user && company) {
+		const reservationDetail = createReservationDetail(
+			reservation,
+			user,
+			company
+		);
+		return res.status(200).json(reservationDetail);
+	}
+
+	res.status(404).json({
+		message: 'A user or company does not exist with given a reservation id',
+	});
 }
 
 export async function addCompanyInterest(
@@ -63,8 +75,11 @@ export async function addCompanyInterest(
 	if (await isCompanyInterested(userId, companyId)) {
 		return res.sendStatus(409);
 	}
-	await CompaniesRepository.addCompanyInterest(userId, companyId);
-	res.sendStatus(201);
+	const insertId = await CompaniesRepository.addCompanyInterest(
+		userId,
+		companyId
+	);
+	res.status(201).json({ insertId });
 }
 
 export async function removeCompanyInterest(
@@ -75,7 +90,7 @@ export async function removeCompanyInterest(
 	const userId = req.userId!;
 	const companyId = req.params.company_id;
 	if (!(await isCompanyInterested(userId, companyId))) {
-		return res.sendStatus(404);
+		return res.status(404);
 	}
 	await CompaniesRepository.removeCompanyInterest(userId, companyId);
 	res.sendStatus(204);
@@ -88,20 +103,20 @@ async function updateCompanyProperties(userId: number, company: Company) {
 }
 
 async function updateIsCompanyInterested(userId: number, company: Company) {
-	company.isCompanyInterested = await isCompanyInterested(
+	company!.isCompanyInterested = await isCompanyInterested(
 		userId,
-		company.id.toString()
+		company!.id.toString()
 	);
 }
 
 async function updateNumOfInterestedUsers(company: Company) {
-	company.numOfInterestedUsers =
+	company!.numOfInterestedUsers =
 		await CompaniesRepository.getNumberOfInterestedUsersOfCompany(
-			company.id.toString()
+			company!.id.toString()
 		);
 }
 
-async function isCompanyInterested(
+export async function isCompanyInterested(
 	userId: number,
 	companyId: string
 ): Promise<number> {
@@ -116,25 +131,25 @@ function createReservationDetail(
 	const reservationInfo = { ...reservation, reservationDateTime: new Date() };
 
 	const userInfo = {
-		userId: user.id,
-		userName: user.userName,
-		userContactNumbers: user.contactNumbers,
-		userEmail: user.email,
-		userAddress: user.address,
-		sizeOfHouse: user.sizeOfHouse,
-		numOfRooms: user.numOfRooms,
+		userId: user!.id,
+		userName: user!.userName,
+		userContactNumbers: user!.contactNumbers,
+		userEmail: user!.email,
+		userAddress: user!.address,
+		sizeOfHouse: user!.sizeOfHouse,
+		numOfRooms: user!.numOfRooms,
 	};
 
 	const companyInfo = {
-		companyId: company.id,
-		companyName: company.name,
-		shortIntro: company.shortIntro,
-		description: company.description,
-		companyContactNumbers: company.contactNumbers,
-		killableBugs: company.killableBugs,
-		availableArea: company.availableArea,
-		availableCounselTime: company.availableCounselTime,
-		thumbnail: company.thumbnail,
+		companyId: company!.id,
+		companyName: company!.name,
+		shortIntro: company!.shortIntro,
+		description: company!.description,
+		companyContactNumbers: company!.contactNumbers,
+		killableBugs: company!.killableBugs,
+		availableArea: company!.availableArea,
+		availableCounselTime: company!.availableCounselTime,
+		thumbnail: company!.thumbnail,
 	};
 
 	return { ...reservationInfo, ...userInfo, ...companyInfo };

@@ -47,10 +47,10 @@ export function findCompanyById(companyId: string): Promise<Company> {
 	);
 }
 
-export function isCompanyInterested(
+export const isCompanyInterested = async (
 	userId: number,
 	companyId: string
-): Promise<number> {
+): Promise<number> => {
 	return createPromiseWithDBQuery<number>(
 		'SELECT * FROM companyinterests WHERE userId = ? AND companyId = ?',
 		[userId, companyId],
@@ -59,7 +59,7 @@ export function isCompanyInterested(
 			else resolve(1);
 		}
 	);
-}
+};
 
 export function addCompanyInterest(
 	userId: number,
@@ -101,13 +101,15 @@ export function getNumberOfInterestedCompaniesOfUser(
 	);
 }
 
-export function getNumberOfInterestedUsersOfCompany(companyId: string): Promise<number> {
+export const getNumberOfInterestedUsersOfCompany = async (
+	companyId: string
+): Promise<number> => {
 	return createPromiseWithDBQuery<number>(
 		'SELECT COUNT(*) FROM companyinterests WHERE companyId = ?',
 		companyId,
 		(resolve, result) => resolve(result[0]['COUNT(*)'])
 	);
-}
+};
 
 export function getReservationItemsOfUser(
 	userId: number

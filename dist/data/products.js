@@ -1,4 +1,4 @@
-import createPromiseWithDBQuery from '../util/promise.js';
+import createPromiseWithDBQuery from '../util/promise';
 export function getProducts() {
     return createPromiseWithDBQuery('SELECT * FROM products', undefined, (resolve, result) => resolve(result));
 }

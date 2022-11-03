@@ -14,7 +14,7 @@ productsRouter.post(
 productsRouter.delete(
 	'/interest/:product_id',
 	isAuth,
-	ProductsController.removeCompanyInterest
+	ProductsController.removeProductInterest
 );
 
 export default productsRouter;

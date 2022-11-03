@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as ProductsRepository from '../data/products.js';
+import * as ProductsRepository from '../data/products';
 export function getProducts(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const products = yield ProductsRepository.getProducts();

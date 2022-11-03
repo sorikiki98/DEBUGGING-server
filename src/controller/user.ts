@@ -5,7 +5,6 @@ import * as UserRepository from '../data/user';
 import * as BugsRepository from '../data/bugs';
 import * as CompanyRepository from '../data/companies';
 import * as ProductRepository from '../data/products';
-import * as ProductController from '../controller/products';
 import { config } from '../config';
 import { UserRegistration, UserLogin, ProductItem } from '../types/index';
 
@@ -87,7 +86,7 @@ export async function getMyPage(
 		productList.map(async (product) => {
 			return updateNumOfInterestedUsers(product);
 		})
-	).then((result) => updatedProductList = result);
+	).then((result) => (updatedProductList = result));
 
 	const userDetail = {
 		...user,
@@ -101,13 +100,15 @@ export async function getMyPage(
 	res.status(200).json(userDetail);
 }
 
-function createJWT(userId: number): string {
+export function createJWT(userId: number): string {
 	return jwt.sign({ userId }, config.jwt.privateKey, {
 		expiresIn: config.jwt.expirSecs,
 	});
 }
 
-async function updateNumOfInterestedUsers(product: ProductItem): Promise<ProductItem> {
+async function updateNumOfInterestedUsers(
+	product: ProductItem
+): Promise<ProductItem> {
 	const numOfUsers =
 		await ProductRepository.getNumberOfInterestedUsersOfProduct(
 			product.productId.toString()

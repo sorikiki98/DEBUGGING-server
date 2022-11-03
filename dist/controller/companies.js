@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as CompaniesRepository from '../data/companies.js';
-import * as UserRepository from '../data/user.js';
+import * as CompaniesRepository from '../data/companies';
+import * as UserRepository from '../data/user';
 export function getCompanies(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const companies = yield CompaniesRepository.getCompanies();
@@ -28,12 +28,14 @@ export function checkReservation(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const reservation = yield CompaniesRepository.getReservationDetail(req.params.reservation_id);
         if (reservation == null) {
-            return res.sendStatus(404);
+            return res.status(404).json({ message: 'A reservation id is invalid.' });
         }
         const user = yield UserRepository.findUserById(req.userId);
         const company = yield CompaniesRepository.findCompanyById(reservation.companyId.toString());
-        const reservationDetail = createReservationDetail(reservation, user, company);
-        res.status(200).json(reservationDetail);
+        if (user && company) {
+            const reservationDetail = createReservationDetail(reservation, user, company);
+            res.status(200).json(reservationDetail);
+        }
     });
 }
 export function addCompanyInterest(req, res, next) {
@@ -58,7 +60,7 @@ export function removeCompanyInterest(req, res, next) {
         res.sendStatus(204);
     });
 }
-function updateCompanyProperties(userId, company) {
+export function updateCompanyProperties(userId, company) {
     return __awaiter(this, void 0, void 0, function* () {
         yield updateIsCompanyInterested(userId, company);
         yield updateNumOfInterestedUsers(company);

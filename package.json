@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "type": "module",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "cross-env DOTENV_CONFIG_PATH=./.env.test jest --watchAll --verbose --testPathIgnorePatterns='/tests, /dist'",
     "test:integration": "cross-env DOTENV_CONFIG_PATH=./.env.test jest --watchAll --verbose --testPathPattern=/tests",
     "start": "concurrently \"tsc -w\" nodemon dist/app"
   },

@@ -1,6 +1,6 @@
 import express from 'express';
-import * as CompaniesController from '../controller/companies.js';
-import { isAuth } from '../middleware/auth.js';
+import * as CompaniesController from '../controller/companies';
+import { isAuth } from '../middleware/auth';
 const companiesRouter = express.Router();
 companiesRouter.get('/', isAuth, CompaniesController.getCompanies);
 companiesRouter.post('/reservation/:company_id', isAuth, CompaniesController.reserve);

@@ -1,4 +1,4 @@
-import createPromiseWithDBQuery from '../util/promise.js';
+import createPromiseWithDBQuery from '../util/promise';
 export function getCompanies() {
     return createPromiseWithDBQuery('SELECT * FROM companies', undefined, (resolve, result) => resolve(result));
 }

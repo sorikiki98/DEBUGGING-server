@@ -1,4 +1,4 @@
-import createPromiseWithDBQuery from '../util/promise.js';
+import createPromiseWithDBQuery from '../util/promise';
 export function createUser(user) {
     return createPromiseWithDBQuery('INSERT INTO users SET ?', user, (resolve, result) => resolve(result['insertId']));
 }
