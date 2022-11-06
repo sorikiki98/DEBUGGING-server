@@ -1,4 +1,4 @@
-import createPromiseWithDBQuery from '../util/promise';
+import createPromiseWithDBQuery from '../util/promise.js';
 export function getBugs() {
     return createPromiseWithDBQuery('SELECT * FROM bugs', undefined, (resolve, result) => resolve(result));
 }

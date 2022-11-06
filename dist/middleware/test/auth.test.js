@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import httpMocks from 'node-mocks-http';
 import { faker } from '@faker-js/faker';
 import jwt from 'jsonwebtoken';
-import { isAuth } from '../auth';
-import * as userRepository from '../../data/user';
+import { isAuth } from '../auth.js';
+import * as userRepository from '../../data/user.js';
 jest.mock('jsonwebtoken');
 jest.mock('../../data/user');
 describe('Auth Middleware', () => {

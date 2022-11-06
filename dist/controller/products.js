@@ -7,13 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as ProductsRepository from '../data/products';
+import * as ProductsRepository from '../data/products.js';
 export function getProducts(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const products = yield ProductsRepository.getProducts();
-        Promise.all(products.map((product) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield Promise.all(products.map((product) => __awaiter(this, void 0, void 0, function* () {
             return updateProductProperties(req.userId, product);
-        }))).then((result) => res.status(200).json(result));
+        })));
+        return res.status(200).json(result);
     });
 }
 export function getProduct(req, res, next) {
@@ -34,11 +35,11 @@ export function addProductInterest(req, res, next) {
         if (yield isProductInterested(userId, productId)) {
             return res.sendStatus(409);
         }
-        yield ProductsRepository.addProductInterest(userId, productId);
-        res.sendStatus(201);
+        const insertId = yield ProductsRepository.addProductInterest(userId, productId);
+        res.status(201).json({ insertId });
     });
 }
-export function removeCompanyInterest(req, res, next) {
+export function removeProductInterest(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = req.userId;
         const productId = req.params.product_id;

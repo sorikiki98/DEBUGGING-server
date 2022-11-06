@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import * as UserRepository from '../data/user';
+import { config } from '../config.js';
+import * as UserRepository from '../data/user.js';
 export const isAuth = (req, res, next) => {
     const authHeader = req.get('Authorization');
     let token;

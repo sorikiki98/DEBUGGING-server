@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from 'express';
-import * as ProductsRepository from '../data/products';
-import { Product } from '../types/index';
+import * as ProductsRepository from '../data/products.js';
+import { Product } from '../types/index.js';
 
 export async function getProducts(
 	req: Request,

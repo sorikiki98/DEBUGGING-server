@@ -1,5 +1,9 @@
-import { pool } from '../db/database';
-import { ResolveCallback, QueryParamType, PromiseReturnType} from '../types/index';
+import { pool } from '../db/database.js';
+import {
+	ResolveCallback,
+	QueryParamType,
+	PromiseReturnType,
+} from '../types/index';
 
 export default function createPromiseWithDBQuery<T = PromiseReturnType>(
 	query: string,
@@ -8,8 +12,10 @@ export default function createPromiseWithDBQuery<T = PromiseReturnType>(
 ): Promise<T> {
 	return new Promise((resolve, reject) => {
 		pool.query(query, params, (error, result) => {
-			if (error) reject(error);
-			else callback(resolve, result);
+			if (error) {
+				console.log(error);
+				reject(error);
+			} else callback(resolve, result);
 		});
 	});
 }

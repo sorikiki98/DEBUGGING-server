@@ -1,7 +1,7 @@
 import httpMocks from 'node-mocks-http';
 import { faker } from '@faker-js/faker';
-import { getBugs, getBug, survey } from '../bugs';
-import * as bugsRepository from '../../data/bugs';
+import { getBugs, getBug, survey } from '../bugs.js';
+import * as bugsRepository from '../../data/bugs.js';
 
 describe('Bugs Controller', () => {
 	it('load all bugs', async () => {

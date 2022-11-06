@@ -3,8 +3,8 @@ import {
 	ReservationDetail,
 	ReservationForm,
 	ReservationItem,
-} from '../types/index';
-import createPromiseWithDBQuery from '../util/promise';
+} from '../types/index.js';
+import createPromiseWithDBQuery from '../util/promise.js';
 
 export function getCompanies(): Promise<Company[]> {
 	return createPromiseWithDBQuery<Company[]>(

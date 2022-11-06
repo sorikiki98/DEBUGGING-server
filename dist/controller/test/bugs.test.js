@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import httpMocks from 'node-mocks-http';
 import { faker } from '@faker-js/faker';
-import { getBugs, getBug, survey } from '../bugs';
-import * as bugsRepository from '../../data/bugs';
+import { getBugs, getBug, survey } from '../bugs.js';
+import * as bugsRepository from '../../data/bugs.js';
 describe('Bugs Controller', () => {
     it('load all bugs', () => __awaiter(void 0, void 0, void 0, function* () {
         const request = httpMocks.createRequest();

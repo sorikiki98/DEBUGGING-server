@@ -1,18 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as UserRepository from '../data/user';
-import * as BugsRepository from '../data/bugs';
-import * as CompanyRepository from '../data/companies';
-import * as ProductRepository from '../data/products';
-import { config } from '../config';
-import { UserRegistration, UserLogin, ProductItem } from '../types/index';
+import * as UserRepository from '../data/user.js';
+import * as BugsRepository from '../data/bugs.js';
+import * as CompanyRepository from '../data/companies.js';
+import * as ProductRepository from '../data/products.js';
+import { config } from '../config.js';
+import { UserRegistration, UserLogin, ProductItem } from '../types/index.js';
 
-export async function createUser(
+export const createUser = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-) {
+) => {
 	const { userName, password } = req.body as UserRegistration;
 	const user = await UserRepository.findUserByName(userName);
 	if (user) {
@@ -36,7 +36,7 @@ export async function createUser(
 	});
 }
 
-export async function login(req: Request, res: Response, next: NextFunction) {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
 	const { userName, password } = req.body as UserLogin;
 	const user = await UserRepository.findUserByName(userName);
 	if (!user) return res.sendStatus(401);

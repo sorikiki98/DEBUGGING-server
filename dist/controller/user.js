@@ -9,43 +9,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as UserRepository from '../data/user';
-import * as BugsRepository from '../data/bugs';
-import * as CompanyRepository from '../data/companies';
-import * as ProductRepository from '../data/products';
-import { config } from '../config';
-export function createUser(req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { userName, password } = req.body;
-        const user = yield UserRepository.findUserByName(userName);
-        if (user) {
-            return res.sendStatus(409);
-        }
-        const hashed = yield bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
-        const userId = yield UserRepository.createUser(Object.assign(Object.assign({}, req.body), { password: hashed }));
-        const token = createJWT(userId);
-        res.status(201).json({
-            token,
-            userName,
-        });
+import * as UserRepository from '../data/user.js';
+import * as BugsRepository from '../data/bugs.js';
+import * as CompanyRepository from '../data/companies.js';
+import * as ProductRepository from '../data/products.js';
+import { config } from '../config.js';
+export const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userName, password } = req.body;
+    const user = yield UserRepository.findUserByName(userName);
+    if (user) {
+        return res.sendStatus(409);
+    }
+    const hashed = yield bcrypt.hash(password, parseInt(config.bcrypt.saltsRound));
+    const userId = yield UserRepository.createUser(Object.assign(Object.assign({}, req.body), { password: hashed }));
+    const token = createJWT(userId);
+    res.status(201).json({
+        token,
+        userName,
     });
-}
-export function login(req, res, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { userName, password } = req.body;
-        const user = yield UserRepository.findUserByName(userName);
-        if (!user)
-            return res.sendStatus(401);
-        const match = yield bcrypt.compare(password, user.password);
-        if (!match)
-            return res.sendStatus(401);
-        const token = createJWT(user.id);
-        res.status(200).json({
-            token,
-            userName,
-        });
+});
+export const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userName, password } = req.body;
+    const user = yield UserRepository.findUserByName(userName);
+    if (!user)
+        return res.sendStatus(401);
+    const match = yield bcrypt.compare(password, user.password);
+    if (!match)
+        return res.sendStatus(401);
+    const token = createJWT(user.id);
+    res.status(200).json({
+        token,
+        userName,
     });
-}
+});
 export function remove(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         yield UserRepository.deleteUser(req.userId);
@@ -67,7 +63,7 @@ export function getMyPage(req, res, next) {
         let updatedProductList;
         yield Promise.all(productList.map((product) => __awaiter(this, void 0, void 0, function* () {
             return updateNumOfInterestedUsers(product);
-        }))).then((result) => updatedProductList = result);
+        }))).then((result) => (updatedProductList = result));
         const userDetail = Object.assign(Object.assign({}, user), { accumulatedNumOfUsages,
             numberOfInterestedCompanies,
             surveyList,
@@ -76,7 +72,7 @@ export function getMyPage(req, res, next) {
         res.status(200).json(userDetail);
     });
 }
-function createJWT(userId) {
+export function createJWT(userId) {
     return jwt.sign({ userId }, config.jwt.privateKey, {
         expiresIn: config.jwt.expirSecs,
     });

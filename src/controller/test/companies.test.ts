@@ -6,9 +6,9 @@ import {
 	checkReservation,
 	addCompanyInterest,
 	removeCompanyInterest,
-} from '../companies';
-import * as companiesRepository from '../../data/companies';
-import * as userRepository from '../../data/user';
+} from '../companies.js';
+import * as companiesRepository from '../../data/companies.js';
+import * as userRepository from '../../data/user.js';
 
 jest.mock('../../data/user');
 jest.mock('../../data/companies', () => {

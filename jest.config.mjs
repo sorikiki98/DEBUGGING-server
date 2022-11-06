@@ -25,6 +25,8 @@ export default {
 		'!**/src/types/*.ts',
 		'!**/src/util/*.ts',
 		'!**/src/config.ts',
+		'!**/src/tests/*',
+		'!**/src/index.ts',
 		'!**/dist/**/test/*.js',
 	],
 
@@ -164,10 +166,7 @@ export default {
 	// ],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-	testPathIgnorePatterns: [
-	"\\node_modules\\",
-	"\\dist\\"
-	],
+	testPathIgnorePatterns: ['\\node_modules\\', '\\dist\\'],
 
 	// The regexp pattern or array of patterns that Jest uses to detect test files
 	// testRegex: [],
@@ -198,4 +197,19 @@ export default {
 
 	// Whether to use watchman for file crawling
 	// watchman: true,
+
+	extensionsToTreatAsEsm: ['.ts'],
+	moduleNameMapper: {
+		'^(\\.{1,2}/.*)\\.js$': '$1',
+	},
+	transform: {
+		// '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
+		// '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
+		'^.+\\.tsx?$': [
+			'ts-jest',
+			{
+				useESM: true,
+			},
+		],
+	},
 };

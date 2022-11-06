@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import { JwtPayloadWithUserId } from '../types/index';
-import * as UserRepository from '../data/user';
+import { config } from '../config.js';
+import { JwtPayloadWithUserId } from '../types/index.js';
+import * as UserRepository from '../data/user.js';
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 	const authHeader = req.get('Authorization');

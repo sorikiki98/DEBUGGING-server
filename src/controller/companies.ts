@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import * as CompaniesRepository from '../data/companies';
-import * as UserRepository from '../data/user';
+import * as CompaniesRepository from '../data/companies.js';
+import * as UserRepository from '../data/user.js';
 import {
 	User,
 	Company,

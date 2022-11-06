@@ -1,6 +1,6 @@
 import express from 'express';
-import * as BugsController from '../controller/bugs';
-import { isAuth } from '../middleware/auth';
+import * as BugsController from '../controller/bugs.js';
+import { isAuth } from '../middleware/auth.js';
 
 const bugsRouter = express.Router();
 

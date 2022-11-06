@@ -7,21 +7,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as CompaniesRepository from '../data/companies';
-import * as UserRepository from '../data/user';
+import * as CompaniesRepository from '../data/companies.js';
+import * as UserRepository from '../data/user.js';
 export function getCompanies(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const companies = yield CompaniesRepository.getCompanies();
-        Promise.all(companies.map((company) => __awaiter(this, void 0, void 0, function* () {
+        const result = yield Promise.all(companies.map((company) => __awaiter(this, void 0, void 0, function* () {
             return updateCompanyProperties(req.userId, company);
-        }))).then((result) => res.status(200).json(result));
+        })));
+        res.status(200).json(result);
     });
 }
 export function reserve(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const reservation = req.body;
         const reservationId = yield CompaniesRepository.reserveCompany(req.userId, req.params.company_id, reservation);
-        res.status(201).json(reservationId);
+        res.status(201).json({ reservationId });
     });
 }
 export function checkReservation(req, res, next) {
@@ -34,8 +35,11 @@ export function checkReservation(req, res, next) {
         const company = yield CompaniesRepository.findCompanyById(reservation.companyId.toString());
         if (user && company) {
             const reservationDetail = createReservationDetail(reservation, user, company);
-            res.status(200).json(reservationDetail);
+            return res.status(200).json(reservationDetail);
         }
+        res.status(404).json({
+            message: 'A user or company does not exist with given a reservation id',
+        });
     });
 }
 export function addCompanyInterest(req, res, next) {
@@ -45,8 +49,8 @@ export function addCompanyInterest(req, res, next) {
         if (yield isCompanyInterested(userId, companyId)) {
             return res.sendStatus(409);
         }
-        yield CompaniesRepository.addCompanyInterest(userId, companyId);
-        res.sendStatus(201);
+        const insertId = yield CompaniesRepository.addCompanyInterest(userId, companyId);
+        res.status(201).json({ insertId });
     });
 }
 export function removeCompanyInterest(req, res, next) {
@@ -54,13 +58,13 @@ export function removeCompanyInterest(req, res, next) {
         const userId = req.userId;
         const companyId = req.params.company_id;
         if (!(yield isCompanyInterested(userId, companyId))) {
-            return res.sendStatus(404);
+            return res.status(404);
         }
         yield CompaniesRepository.removeCompanyInterest(userId, companyId);
         res.sendStatus(204);
     });
 }
-export function updateCompanyProperties(userId, company) {
+function updateCompanyProperties(userId, company) {
     return __awaiter(this, void 0, void 0, function* () {
         yield updateIsCompanyInterested(userId, company);
         yield updateNumOfInterestedUsers(company);
@@ -78,7 +82,7 @@ function updateNumOfInterestedUsers(company) {
             yield CompaniesRepository.getNumberOfInterestedUsersOfCompany(company.id.toString());
     });
 }
-function isCompanyInterested(userId, companyId) {
+export function isCompanyInterested(userId, companyId) {
     return __awaiter(this, void 0, void 0, function* () {
         return CompaniesRepository.isCompanyInterested(userId, companyId);
     });

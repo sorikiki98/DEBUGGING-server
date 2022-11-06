@@ -5,8 +5,8 @@ import {
 	getProduct,
 	addProductInterest,
 	removeProductInterest,
-} from '../products';
-import * as productsRepository from '../../data/products';
+} from '../products.js';
+import * as productsRepository from '../../data/products.js';
 
 jest.mock('../../data/products', () => {
 	const originalModule = jest.requireActual('../../data/products');

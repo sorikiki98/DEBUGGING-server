@@ -1,11 +1,11 @@
 import httpMocks from 'node-mocks-http';
 import { Faker, faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
-import * as userRepository from '../../data/user';
-import * as companiesRepository from '../../data/companies';
-import * as productsRepository from '../../data/products';
-import * as bugsRepository from '../../data/bugs';
-import { createUser, getMyPage, login, remove } from '../../controller/user';
+import * as userRepository from '../../data/user.js';
+import * as companiesRepository from '../../data/companies.js';
+import * as productsRepository from '../../data/products.js';
+import * as bugsRepository from '../../data/bugs.js';
+import { createUser, getMyPage, login, remove } from '../../controller/user.js';
 
 jest.mock('bcrypt');
 jest.mock('../../data/user');
